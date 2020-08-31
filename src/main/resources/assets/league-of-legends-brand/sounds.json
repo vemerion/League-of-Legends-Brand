@@ -1,0 +1,47 @@
+{
+  "burning_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:burning_sound",
+        "stream": false
+      }
+    ]
+  },
+  "explosion_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:explosion_sound",
+        "stream": false
+      }
+    ]
+  },
+  "fireball_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:fireball_sound",
+        "stream": false
+      }
+    ]
+  },
+  "fireball_spell": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:fireball_spell",
+        "stream": false
+      }
+    ]
+  },
+  "fireball_woosh_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:fireball_woosh_sound",
+        "stream": false
+      }
+    ]
+  }
+}
