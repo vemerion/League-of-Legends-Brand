@@ -16,8 +16,10 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
@@ -52,33 +54,17 @@ public class BrandRenderer extends PlayerRenderer {
 		model.setRotationAngles(playerIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 	}
 
-	// Only for rendering arm without holding item
-	public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
+	public void renderArm(HandSide side, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
 			AbstractClientPlayerEntity playerIn, float partialTicks) {
+		ModelRenderer arm = side == HandSide.LEFT ? entityModel.bipedLeftArm : entityModel.bipedRightArm;
 		preRenderArm(playerIn);
-		entityModel.bipedRightArm.rotateAngleX = 0.0F;
+		arm.rotateAngleX = 0.0F;
 		matrixStackIn.push();
-		matrixStackIn.translate(-0.35, -0.35, 0.2);
+		matrixStackIn.translate(0.35 * (side == HandSide.LEFT ? 1 : -1), -0.35, 0.2);
 		renderBurning(35, playerIn, matrixStackIn, bufferIn, partialTicks, combinedLightIn);
 		matrixStackIn.pop();
-		entityModel.bipedRightArm.render(matrixStackIn,
-				bufferIn.getBuffer(RenderType.getEntitySolid(getEntityTexture(playerIn))), combinedLightIn,
-				OverlayTexture.NO_OVERLAY);
-
-	}
-
-	public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn,
-			AbstractClientPlayerEntity playerIn, float partialTicks) {
-		preRenderArm(playerIn);
-		entityModel.bipedLeftArm.rotateAngleX = 0.0F;
-		matrixStackIn.push();
-		matrixStackIn.translate(0.35, -0.35, 0.2);
-		renderBurning(35, playerIn, matrixStackIn, bufferIn, partialTicks, combinedLightIn);
-		matrixStackIn.pop();
-		entityModel.bipedLeftArm.render(matrixStackIn,
-				bufferIn.getBuffer(RenderType.getEntitySolid(getEntityTexture(playerIn))), combinedLightIn,
-				OverlayTexture.NO_OVERLAY);
-
+		arm.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntitySolid(getEntityTexture(playerIn))),
+				combinedLightIn, OverlayTexture.NO_OVERLAY);
 	}
 
 	public void renderSear(float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
@@ -86,12 +72,12 @@ public class BrandRenderer extends PlayerRenderer {
 		matrix.push();
 		matrix.rotate(new Quaternion(-70, -5, progress * 20, true));
 		matrix.translate(1 - progress * 0.25, 0.2, -0.7);
-		renderRightArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.RIGHT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 		matrix.push();
 		matrix.rotate(new Quaternion(-70, 5, -progress * 20, true));
 		matrix.translate(-1 + progress * 0.25, 0.2, -0.7);
-		renderLeftArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.LEFT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 	}
 
@@ -100,13 +86,13 @@ public class BrandRenderer extends PlayerRenderer {
 		matrix.push();
 		matrix.rotate(new Quaternion(-90 * progress, -5, 20 - progress * 20, true));
 		matrix.translate(0.5 + progress * 1, 0, 0.3 - 2 * progress);
-		renderRightArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.RIGHT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 		matrix.push();
 		matrix.rotate(new Quaternion(-90 * progress, 5, -20 + progress * 20, true));
 		matrix.translate(-0.5 - progress * 1, 0, 0.3 - 2 * progress);
 
-		renderLeftArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.LEFT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 	}
 
@@ -115,13 +101,13 @@ public class BrandRenderer extends PlayerRenderer {
 		matrix.push();
 		matrix.rotate(new Quaternion(-70, -5, 20 - progress * 90, true));
 		matrix.translate(0.75 + progress * 0.25, 0.2, -0.7);
-		renderRightArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.RIGHT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 		matrix.push();
 		matrix.rotate(new Quaternion(-70, 5, -20 + progress * 90, true));
 		matrix.translate(-0.75 - progress * 0.25, 0.2, -0.7);
 
-		renderLeftArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.LEFT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 	}
 
@@ -130,13 +116,13 @@ public class BrandRenderer extends PlayerRenderer {
 		matrix.push();
 		matrix.rotate(new Quaternion(-30 - 60 * progress, -5, 20 - progress * 90, true));
 		matrix.translate(0.75 + progress * 0.25, 0, -0.7);
-		renderRightArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.RIGHT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 		matrix.push();
 		matrix.rotate(new Quaternion(-30 - 60 * progress, 5, -20 + progress * 90, true));
 		matrix.translate(-0.75 - progress * 0.25, 0, -0.7);
 
-		renderLeftArm(matrix, buffer, light, player, partialTicks);
+		renderArm(HandSide.LEFT, matrix, buffer, light, player, partialTicks);
 		matrix.pop();
 	}
 

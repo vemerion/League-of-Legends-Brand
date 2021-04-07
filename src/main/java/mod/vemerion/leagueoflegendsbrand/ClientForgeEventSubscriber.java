@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraftforge.api.distmarker.Dist;
@@ -88,16 +89,19 @@ public class ClientForgeEventSubscriber {
 	@SubscribeEvent
 	public static void brandHand(RenderHandEvent event) {
 		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
-		Item item = event.getItemStack().getItem();
-		ItemStack itemStack = event.getItemStack();
+		ItemStack stack = event.getItemStack();
+		Item item = stack.getItem();
 		float partialTicks = event.getPartialTicks();
 		Brand.getBrand(player).ifPresent(b -> {
-			if (event.getHand() == Hand.MAIN_HAND && b.isBrand()) {
-				if (item instanceof BrandSpell) {
+			if (b.isBrand()) {
+				if (player.getActiveItemStack().getItem() instanceof BrandSpell || stack.isEmpty()
+						|| item instanceof BrandSpell)
 					event.setCanceled(true);
-					if (player.getActiveItemStack().equals(itemStack)) {
+
+				if (item instanceof BrandSpell) {
+					if (player.getActiveItemStack() == stack) {
 						BrandRenderer renderer = new BrandRenderer(Minecraft.getInstance().getRenderManager());
-						float maxProgress = (float) itemStack.getUseDuration();
+						float maxProgress = (float) stack.getUseDuration();
 						float progress = (maxProgress
 								- ((float) player.getItemInUseCount() - (float) event.getPartialTicks() + 1.0f))
 								/ maxProgress;
@@ -117,8 +121,7 @@ public class ClientForgeEventSubscriber {
 					} else {
 						renderBrandHand(event);
 					}
-				} else if (itemStack.isEmpty()) {
-					event.setCanceled(true);
+				} else if (stack.isEmpty() && event.getHand() == Hand.MAIN_HAND) {
 					renderBrandHand(event);
 				}
 			}
@@ -128,18 +131,23 @@ public class ClientForgeEventSubscriber {
 	private static void renderBrandHand(RenderHandEvent event) {
 		Minecraft mc = Minecraft.getInstance();
 		AbstractClientPlayerEntity player = mc.player;
+		if (player.getActiveItemStack().getItem() instanceof BrandSpell)
+			return;
 		BrandRenderer renderer = new BrandRenderer(mc.getRenderManager());
 		mc.getTextureManager().bindTexture(BrandRenderer.TEXTURES);
 		float swingProgress = event.getSwingProgress();
 		float equipProgress = swingProgress > 0.01 ? 0 : event.getEquipProgress();
+		HandSide side = event.getHand() == Hand.MAIN_HAND ? player.getPrimaryHand()
+				: player.getPrimaryHand().opposite();
+		float offset = side == HandSide.RIGHT ? 1 : -1;
 		MatrixStack matrix = event.getMatrixStack();
 		matrix.push();
-		float swingProgressSqrt = MathHelper.sqrt(swingProgress);
-		matrix.rotate(new Quaternion(-70, -5, 0, true));
-		matrix.translate(1, 0.2, -0.7 - 1 * equipProgress);
-		matrix.rotate(new Quaternion(-40 * swingProgressSqrt, 0, 50 * swingProgressSqrt, true));
-		matrix.translate(-swingProgressSqrt, 0, 0);
-		renderer.renderRightArm(matrix, event.getBuffers(), event.getLight(), player, event.getPartialTicks());
+
+		matrix.translate(0, 0, -1);
+		matrix.rotate(
+				new Quaternion(-45 - swingProgress * 100, offset * (20 + swingProgress * 100), -20 * offset, true));
+		matrix.translate(offset * 1.2, -0.7 - equipProgress + swingProgress * 2.5, -swingProgress * 2);
+		renderer.renderArm(side, matrix, event.getBuffers(), event.getLight(), player, event.getPartialTicks());
 		matrix.pop();
 	}
 }
