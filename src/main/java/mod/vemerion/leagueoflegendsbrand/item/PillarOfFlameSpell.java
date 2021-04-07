@@ -1,6 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
 import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,39 +20,32 @@ public class PillarOfFlameSpell extends BrandSpell {
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			player.getCooldownTracker().setCooldown(this, 180);
-			PillarOfFlameEntity entity = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP)
-					.orElseThrow(() -> new IllegalArgumentException("Player does not have Brand cap"))
-					.getPillarOfFlame();
-			if (entity != null) {
-				entity.setExplode(true);
-			}
+			Brand.getBrand(entityLiving).ifPresent(b -> {
+				if (b.getPillarOfFlame() != null)
+					b.getPillarOfFlame().setExplode(true);
+			});
 		}
 		return stack;
 	}
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) entityLiving;
-			PillarOfFlameEntity entity = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP)
-					.orElseThrow(() -> new IllegalArgumentException("Player does not have Brand cap"))
-					.getPillarOfFlame();
-			if (entity != null) {
-				entity.remove();
-			}
-		}
+		if (!worldIn.isRemote)
+			Brand.getBrand(entityLiving).ifPresent(b -> {
+				if (b.getPillarOfFlame() != null)
+					b.getPillarOfFlame().remove();
+			});
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		Vector3d position = aoEPlacement(worldIn, playerIn);
 		if (position != null && canCast(playerIn)) {
-			PillarOfFlameEntity entity = new PillarOfFlameEntity(LeagueOfLegendsBrand.PILLAR_OF_FLAME_ENTITY, worldIn, playerIn);
+			PillarOfFlameEntity entity = new PillarOfFlameEntity(LeagueOfLegendsBrand.PILLAR_OF_FLAME_ENTITY, worldIn,
+					playerIn);
 			entity.setPositionAndRotation(position.getX(), position.getY(), position.getZ(), 0, 0);
 			worldIn.addEntity(entity);
-			playerIn.getCapability(LeagueOfLegendsBrand.BRAND_CAP)
-					.orElseThrow(() -> new IllegalArgumentException("Player does not have Brand cap"))
-					.setPillarOfFlame(entity);
+			Brand.getBrand(playerIn).ifPresent(b -> b.setPillarOfFlame(entity));
 			return super.onItemRightClick(worldIn, playerIn, handIn);
 		} else {
 			return ActionResult.resultFail(playerIn.getHeldItem(handIn));

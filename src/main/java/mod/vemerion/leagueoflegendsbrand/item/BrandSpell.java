@@ -1,6 +1,5 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -8,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class BrandSpell extends Item {
 
@@ -32,6 +32,7 @@ public abstract class BrandSpell extends Item {
 	}
 
 	protected boolean canCast(PlayerEntity player) {
-		return player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand()).isBrand();
+		LazyOptional<Brand> brand = Brand.getBrand(player);
+		return brand.isPresent() && brand.orElse(null).isBrand();
 	}
 }

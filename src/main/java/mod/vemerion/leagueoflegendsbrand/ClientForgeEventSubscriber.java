@@ -24,17 +24,18 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEventSubscriber {
-	
+
 	@SubscribeEvent
 	public static void renderBrand(RenderPlayerEvent.Pre event) {
-		boolean isBrand = event.getPlayer().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand()).isBrand();
-		if (!(event.getRenderer() instanceof BrandRenderer) && isBrand) {
-			event.setCanceled(true);
-			renderBrandTexture(event);
-			renderBurningHead(event);
-		}
+		Brand.getBrand(event.getPlayer()).ifPresent(b -> {
+			if (!(event.getRenderer() instanceof BrandRenderer) && b.isBrand()) {
+				event.setCanceled(true);
+				renderBrandTexture(event);
+				renderBurningHead(event);
+			}
+		});
 	}
-	
+
 	private static void renderBrandTexture(RenderPlayerEvent.Pre event) {
 		BrandRenderer renderer = new BrandRenderer(event.getRenderer().getRenderManager());
 		float partialTicks = event.getPartialRenderTick();
@@ -58,7 +59,7 @@ public class ClientForgeEventSubscriber {
 				event.getPartialRenderTick(), event.getLight());
 		matrix.pop();
 	}
-	
+
 	@SubscribeEvent
 	public static void transformBrandAnimation(RenderHandEvent event) {
 		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
@@ -90,37 +91,38 @@ public class ClientForgeEventSubscriber {
 		Item item = event.getItemStack().getItem();
 		ItemStack itemStack = event.getItemStack();
 		float partialTicks = event.getPartialTicks();
-		boolean isBrand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand()).isBrand();
-		if (event.getHand() == Hand.MAIN_HAND && isBrand) {
-			if (item instanceof BrandSpell) {
-				event.setCanceled(true);
-				if (player.getActiveItemStack().equals(itemStack)) {
-					BrandRenderer renderer = new BrandRenderer(Minecraft.getInstance().getRenderManager());
-					float maxProgress = (float) itemStack.getUseDuration();
-					float progress = (maxProgress
-							- ((float) player.getItemInUseCount() - (float) event.getPartialTicks() + 1.0f))
-							/ maxProgress;
-					if (item.equals(LeagueOfLegendsBrand.SEAR_SPELL)) {
-						renderer.renderSear(progress, event.getMatrixStack(), event.getBuffers(), event.getLight(),
-								player, partialTicks);
-					} else if (item.equals(LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL)) {
-						renderer.renderPillarOfFlame(progress, event.getMatrixStack(), event.getBuffers(),
-								event.getLight(), player, partialTicks);
-					} else if (item.equals(LeagueOfLegendsBrand.CONFLAGRATION_SPELL)) {
-						renderer.renderConflagration(progress, event.getMatrixStack(), event.getBuffers(),
-								event.getLight(), player, partialTicks);
-					} else if (item.equals(LeagueOfLegendsBrand.PYROCLASM_SPELL)) {
-						renderer.renderPyroclasm(progress, event.getMatrixStack(), event.getBuffers(), event.getLight(),
-								player, partialTicks);
+		Brand.getBrand(player).ifPresent(b -> {
+			if (event.getHand() == Hand.MAIN_HAND && b.isBrand()) {
+				if (item instanceof BrandSpell) {
+					event.setCanceled(true);
+					if (player.getActiveItemStack().equals(itemStack)) {
+						BrandRenderer renderer = new BrandRenderer(Minecraft.getInstance().getRenderManager());
+						float maxProgress = (float) itemStack.getUseDuration();
+						float progress = (maxProgress
+								- ((float) player.getItemInUseCount() - (float) event.getPartialTicks() + 1.0f))
+								/ maxProgress;
+						if (item.equals(LeagueOfLegendsBrand.SEAR_SPELL)) {
+							renderer.renderSear(progress, event.getMatrixStack(), event.getBuffers(), event.getLight(),
+									player, partialTicks);
+						} else if (item.equals(LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL)) {
+							renderer.renderPillarOfFlame(progress, event.getMatrixStack(), event.getBuffers(),
+									event.getLight(), player, partialTicks);
+						} else if (item.equals(LeagueOfLegendsBrand.CONFLAGRATION_SPELL)) {
+							renderer.renderConflagration(progress, event.getMatrixStack(), event.getBuffers(),
+									event.getLight(), player, partialTicks);
+						} else if (item.equals(LeagueOfLegendsBrand.PYROCLASM_SPELL)) {
+							renderer.renderPyroclasm(progress, event.getMatrixStack(), event.getBuffers(),
+									event.getLight(), player, partialTicks);
+						}
+					} else {
+						renderBrandHand(event);
 					}
-				} else {
+				} else if (itemStack.isEmpty()) {
+					event.setCanceled(true);
 					renderBrandHand(event);
 				}
-			} else if (itemStack.isEmpty()) {
-				event.setCanceled(true);
-				renderBrandHand(event);
 			}
-		}
+		});
 	}
 
 	private static void renderBrandHand(RenderHandEvent event) {

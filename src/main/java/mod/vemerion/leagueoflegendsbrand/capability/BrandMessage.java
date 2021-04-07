@@ -55,11 +55,8 @@ public class BrandMessage {
 					World world = Minecraft.getInstance().world;
 					if (world != null) {
 						PlayerEntity player = world.getPlayerByUuid(id);
-						if (player != null) {
-							Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP)
-									.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!"));
-							brand.setBrand(isBrand);
-						}
+						if (player != null)
+							Brand.getBrand(player).ifPresent(b -> b.setBrand(isBrand));
 					}
 				}
 			};

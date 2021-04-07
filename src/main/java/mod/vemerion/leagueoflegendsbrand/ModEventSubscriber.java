@@ -3,7 +3,6 @@ package mod.vemerion.leagueoflegendsbrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.capability.BrandMessage;
-import mod.vemerion.leagueoflegendsbrand.capability.BrandStorage;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
@@ -72,24 +71,27 @@ public class ModEventSubscriber {
 	public static void onRegisterSound(RegistryEvent.Register<SoundEvent> event) {
 		SoundEvent burning_sound = new SoundEvent(new ResourceLocation(LeagueOfLegendsBrand.MODID, "burning_sound"));
 		event.getRegistry().register(setup(burning_sound, "burning_sound"));
-		SoundEvent explosion_sound = new SoundEvent(new ResourceLocation(LeagueOfLegendsBrand.MODID, "explosion_sound"));
+		SoundEvent explosion_sound = new SoundEvent(
+				new ResourceLocation(LeagueOfLegendsBrand.MODID, "explosion_sound"));
 		event.getRegistry().register(setup(explosion_sound, "explosion_sound"));
 		SoundEvent fireball_sound = new SoundEvent(new ResourceLocation(LeagueOfLegendsBrand.MODID, "fireball_sound"));
 		event.getRegistry().register(setup(fireball_sound, "fireball_sound"));
 		SoundEvent fireball_spell = new SoundEvent(new ResourceLocation(LeagueOfLegendsBrand.MODID, "fireball_spell"));
 		event.getRegistry().register(setup(fireball_spell, "fireball_spell"));
-		SoundEvent fireball_woosh_sound = new SoundEvent(new ResourceLocation(LeagueOfLegendsBrand.MODID, "fireball_woosh_sound"));
+		SoundEvent fireball_woosh_sound = new SoundEvent(
+				new ResourceLocation(LeagueOfLegendsBrand.MODID, "fireball_woosh_sound"));
 		event.getRegistry().register(setup(fireball_woosh_sound, "fireball_woosh_sound"));
 	}
-	
+
 	@SubscribeEvent
 	public static void onRegisterModifiers(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
-		event.getRegistry().register(setup(new SummonersRiftBrandModifier.Serializer(), "summoners_rift_brand_dungeon_loot"));
+		event.getRegistry()
+				.register(setup(new SummonersRiftBrandModifier.Serializer(), "summoners_rift_brand_dungeon_loot"));
 	}
-	
+
 	@SubscribeEvent
 	public static void setup(FMLCommonSetupEvent event) {
-		CapabilityManager.INSTANCE.register(Brand.class, new BrandStorage(), Brand::new);
+		CapabilityManager.INSTANCE.register(Brand.class, new Brand.BrandStorage(), Brand::new);
 		CapabilityManager.INSTANCE.register(Ablazed.class, new IStorage<Ablazed>() {
 			@Override
 			public INBT writeNBT(Capability<Ablazed> capability, Ablazed instance, Direction side) {

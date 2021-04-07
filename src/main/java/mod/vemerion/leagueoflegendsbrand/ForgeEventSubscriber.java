@@ -5,7 +5,6 @@ import java.util.Iterator;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.AblazedProvider;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
-import mod.vemerion.leagueoflegendsbrand.capability.BrandProvider;
 import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -34,15 +33,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE)
 public class ForgeEventSubscriber {
 
-	public static final ResourceLocation BRAND_CAP = new ResourceLocation(LeagueOfLegendsBrand.MODID, "brand");
 	public static final ResourceLocation ABLAZED_CAP = new ResourceLocation(LeagueOfLegendsBrand.MODID, "ablazed");
 
 	@SubscribeEvent
 	public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
-		if (event.getObject() instanceof PlayerEntity) {
-			event.addCapability(BRAND_CAP, new BrandProvider());
-		}
-
 		if (event.getObject() instanceof LivingEntity) {
 			event.addCapability(ABLAZED_CAP, new AblazedProvider());
 		}
@@ -65,7 +59,7 @@ public class ForgeEventSubscriber {
 		PlayerEntity player = event.getPlayer();
 		Brand.syncBrand(player, (ServerPlayerEntity) player);
 	}
-	
+
 	@SubscribeEvent
 	public static void synchBrand(PlayerEvent.StartTracking event) {
 		Brand.syncBrand(event.getTarget(), (ServerPlayerEntity) event.getPlayer());
@@ -76,25 +70,26 @@ public class ForgeEventSubscriber {
 		if (event.side == LogicalSide.SERVER && event.phase == Phase.START) {
 			PlayerEntity player = event.player;
 			ServerWorld world = (ServerWorld) player.world;
-			boolean isBrand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand()).isBrand();
-			if (isBrand) {
-				Hand hand = null;
-				if (player.getHeldItemMainhand().getItem().equals(Items.FILLED_MAP))
-					hand = Hand.MAIN_HAND;
-				else if (player.getHeldItemOffhand().getItem().equals(Items.FILLED_MAP))
-					hand = Hand.OFF_HAND;
-				if (hand != null) {
-					player.setHeldItem(hand, new ItemStack(Items.AIR));
-					for (int i = 0; i < 30; i++) {
-						Vector3d position = player.getPositionVec()
-								.add(player.getRNG().nextDouble() * 0.4 - 0.2, 1.5,
-										player.getRNG().nextDouble() * 0.4 - 0.2)
-								.add(Vector3d.fromPitchYaw(player.getPitchYaw()).scale(0.5));
-						world.spawnParticle(ParticleTypes.FLAME, position.getX(), position.getY(), position.getZ(), 1,
-								0, 0, 0, 0.1);
+			Brand.getBrand(player).ifPresent(b -> {
+				if (b.isBrand()) {
+					Hand hand = null;
+					if (player.getHeldItemMainhand().getItem().equals(Items.FILLED_MAP))
+						hand = Hand.MAIN_HAND;
+					else if (player.getHeldItemOffhand().getItem().equals(Items.FILLED_MAP))
+						hand = Hand.OFF_HAND;
+					if (hand != null) {
+						player.setHeldItem(hand, new ItemStack(Items.AIR));
+						for (int i = 0; i < 30; i++) {
+							Vector3d position = player.getPositionVec()
+									.add(player.getRNG().nextDouble() * 0.4 - 0.2, 1.5,
+											player.getRNG().nextDouble() * 0.4 - 0.2)
+									.add(Vector3d.fromPitchYaw(player.getPitchYaw()).scale(0.5));
+							world.spawnParticle(ParticleTypes.FLAME, position.getX(), position.getY(), position.getZ(),
+									1, 0, 0, 0, 0.1);
+						}
 					}
 				}
-			}
+			});
 		}
 	}
 
@@ -125,9 +120,8 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void readdSpellsAfterDeath(PlayerEvent.Clone event) {
 		event.getPlayer().inventory.copyInventory(event.getOriginal().inventory);
-		Brand cloneBrand = event.getPlayer().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-		Brand originalBrand = event.getOriginal().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-		cloneBrand.setBrand(originalBrand.isBrand());
+		Brand.getBrand(event.getPlayer()).ifPresent(clone -> Brand.getBrand(event.getOriginal())
+				.ifPresent(original -> clone.deserializeNBT(original.serializeNBT())));
 	}
 
 }

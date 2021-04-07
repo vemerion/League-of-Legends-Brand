@@ -1,7 +1,6 @@
 package mod.vemerion.leagueoflegendsbrand;
 
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
-import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
@@ -63,10 +62,6 @@ public class LeagueOfLegendsBrand {
 
 	@ObjectHolder("league-of-legends-brand:fireball_woosh_sound")
 	public static final SoundEvent FIREBALL_WOOSH_SOUND = null;    
-
-	
-	@CapabilityInject(Brand.class)
-	public static final Capability<Brand> BRAND_CAP = null;
 
 	@CapabilityInject(Ablazed.class)
 	public static final Capability<Ablazed> ABLAZED_CAP = null;
