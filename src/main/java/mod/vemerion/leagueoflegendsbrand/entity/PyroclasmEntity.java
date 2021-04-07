@@ -12,7 +12,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class PyroclasmEntity extends BrandBallEntity {
@@ -56,7 +56,7 @@ public class PyroclasmEntity extends BrandBallEntity {
 	protected void onEntityHit(EntityRayTraceResult result) {
 		if (!world.isRemote) {
 			Entity hitEntity = result.getEntity();
-			Entity shooter = getShooter();
+			Entity shooter = func_234616_v_();
 			if (hitEntity instanceof LivingEntity && shooter instanceof PlayerEntity) {
 				hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) shooter), 10);
 				ConflagrationEntity fireEffect = new ConflagrationEntity(LeagueOfLegendsBrand.CONFLAGRATION_ENTITY,
@@ -79,15 +79,15 @@ public class PyroclasmEntity extends BrandBallEntity {
 	}
 
 	private void bounce(Entity bouncer) {
-		Entity shooter = getShooter();
+		Entity shooter = func_234616_v_();
 		List<Entity> nearby = world.getEntitiesInAABBexcluding(this, getBoundingBox().grow(5),
 				(e) -> e instanceof LivingEntity && (target == null || e.getEntityId() != target.getEntityId())
 						&& (shooter == null || e.getEntityId() != shooter.getEntityId())
 						&& e.getEntityId() != bouncer.getEntityId() && e.isAlive());
 		if (!nearby.isEmpty()) {
 			Entity next = nearby.get(rand.nextInt(nearby.size()));
-			Vec3d position = getPositionVec();
-			Vec3d direction = next.getEyePosition(0.5f).subtract(position);
+			Vector3d position = getPositionVec();
+			Vector3d direction = next.getEyePosition(0.5f).subtract(position);
 			PyroclasmEntity pyro = new PyroclasmEntity(LeagueOfLegendsBrand.PYROCLASM_ENTITY, position.getX(),
 					position.getY(), position.getZ(), world, next, bounces - 1);
 			pyro.bouncer = bouncer;

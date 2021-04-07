@@ -30,7 +30,7 @@ public class BrandBallEntity extends AbstractArrowEntity {
 	}
 
 	@Override
-	protected void onHit(RayTraceResult raytraceResultIn) {
+	protected void onImpact(RayTraceResult raytraceResultIn) {
 		RayTraceResult.Type resultType = raytraceResultIn.getType();
 		if (resultType == RayTraceResult.Type.ENTITY) {
 			this.onEntityHit((EntityRayTraceResult) raytraceResultIn);
@@ -46,7 +46,7 @@ public class BrandBallEntity extends AbstractArrowEntity {
 
 	@Override
 	public void setShooter(@Nullable Entity entityIn) {
-		this.shootingEntity = entityIn == null ? null : entityIn.getUniqueID();
-		this.pickupStatus = AbstractArrowEntity.PickupStatus.DISALLOWED;
+		super.setShooter(entityIn);
+		pickupStatus = AbstractArrowEntity.PickupStatus.DISALLOWED;
 	}
 }

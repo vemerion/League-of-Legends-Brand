@@ -35,7 +35,7 @@ public class SearEntity extends BrandBallEntity {
 	protected void onEntityHit(EntityRayTraceResult result) {
 		if (!world.isRemote) {
 			Entity target = result.getEntity();
-			Entity shooter = getShooter();
+			Entity shooter = func_234616_v_();
 			if (target instanceof LivingEntity && shooter instanceof PlayerEntity) {
 				target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity)shooter), 4);
 				Ablazed ablazed = target.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());

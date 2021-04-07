@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class BrandBallRenderer extends EntityRenderer<BrandBallEntity> {
 	private final BrandParticleModel model = new BrandParticleModel();
@@ -32,7 +32,7 @@ public class BrandBallRenderer extends EntityRenderer<BrandBallEntity> {
 		float ageInTicks = entityIn.ticksExisted + partialTicks;
 		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(getEntityTexture(entityIn)));
 		Random random = new Random(0);
-		Vec3d direction = entityIn.getMotion().normalize().inverse().scale(2);
+		Vector3d direction = entityIn.getMotion().normalize().inverse().scale(2);
 		
 		float size = entityIn.getSize(Pose.STANDING).width;
 		float count = Math.min(size * 700, 550);
@@ -45,7 +45,7 @@ public class BrandBallRenderer extends EntityRenderer<BrandBallEntity> {
 			float offsetYaw = random.nextFloat() * 360;
 			float offsetPitch = random.nextFloat() * 360;
 			float radius = random.nextFloat() * size / 2;
-			Vec3d offset = Vec3d.fromPitchYaw(offsetPitch, offsetYaw).scale(radius);
+			Vector3d offset = Vector3d.fromPitchYaw(offsetPitch, offsetYaw).scale(radius);
 			matrixStackIn.push();
 
 			float scale = Helper.lerpRepeat(ageInTicks / interval, size, 0);

@@ -52,7 +52,6 @@ public class SummonersRiftBrandItem extends Item {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
 			if (brand.isBrand()) {
-				player.inventory.clearMatchingItems((s) -> s.getItem() instanceof BrandSpell, 99);
 				brand.setBrand(false);
 			} else {
 				player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.SEAR_SPELL));

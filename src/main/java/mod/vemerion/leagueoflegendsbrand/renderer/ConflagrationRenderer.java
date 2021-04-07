@@ -16,7 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class ConflagrationRenderer extends EntityRenderer<ConflagrationEntity> {
 	private final BrandParticleModel model = new BrandParticleModel();
@@ -43,7 +43,7 @@ public class ConflagrationRenderer extends EntityRenderer<ConflagrationEntity> {
 			float blue = 0;
 			float direction = random.nextFloat() * 360;
 			float radius = random.nextFloat() * width;
-			Vec3d offset = Vec3d.fromPitchYaw(0, direction).scale(radius);
+			Vector3d offset = Vector3d.fromPitchYaw(0, direction).scale(radius);
 			matrixStackIn.push();
 
 			float scale = (float) MathHelper.clampedLerp(2, 0, (ageInTicks + random.nextFloat() * 3) / interval);

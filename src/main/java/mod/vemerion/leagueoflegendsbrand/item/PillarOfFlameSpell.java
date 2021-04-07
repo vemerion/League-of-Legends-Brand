@@ -9,7 +9,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class PillarOfFlameSpell extends BrandSpell {
@@ -44,7 +44,7 @@ public class PillarOfFlameSpell extends BrandSpell {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		Vec3d position = aoEPlacement(worldIn, playerIn);
+		Vector3d position = aoEPlacement(worldIn, playerIn);
 		if (position != null && canCast(playerIn)) {
 			PillarOfFlameEntity entity = new PillarOfFlameEntity(LeagueOfLegendsBrand.PILLAR_OF_FLAME_ENTITY, worldIn, playerIn);
 			entity.setPositionAndRotation(position.getX(), position.getY(), position.getZ(), 0, 0);
@@ -58,9 +58,9 @@ public class PillarOfFlameSpell extends BrandSpell {
 		}
 	}
 
-	private Vec3d aoEPlacement(World world, LivingEntity entity) {
+	private Vector3d aoEPlacement(World world, LivingEntity entity) {
 		double distance = MathHelper.clampedLerp(7, 1, (entity.rotationPitch + 10) / 80f);
-		Vec3d position = Vec3d.fromPitchYaw(0, entity.rotationYaw).scale(distance).add(entity.getPositionVec());
+		Vector3d position = Vector3d.fromPitchYaw(0, entity.rotationYaw).scale(distance).add(entity.getPositionVec());
 		BlockPos pos = new BlockPos(position);
 		if (world.isAirBlock(pos) && !world.isAirBlock(pos.add(0, -1, 0))) {
 			return position;

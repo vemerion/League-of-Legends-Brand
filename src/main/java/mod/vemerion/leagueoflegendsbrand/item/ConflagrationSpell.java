@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class ConflagrationSpell extends BrandSpell {
@@ -20,7 +20,7 @@ public class ConflagrationSpell extends BrandSpell {
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			Entity target = findTarget(entityLiving.getPositionVec().add(0, 1.6, 0),
-					Vec3d.fromPitchYaw(entityLiving.getPitchYaw()).scale(0.5), 7, worldIn, entityLiving);
+					Vector3d.fromPitchYaw(entityLiving.getPitchYaw()).scale(0.5), 7, worldIn, entityLiving);
 			if (target != null) {
 				target.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
 				player.getCooldownTracker().setCooldown(this, 160);
@@ -45,7 +45,7 @@ public class ConflagrationSpell extends BrandSpell {
 		return stack;
 	}
 
-	private Entity findTarget(Vec3d start, Vec3d direction, float distance, World world, LivingEntity caster) {
+	private Entity findTarget(Vector3d start, Vector3d direction, float distance, World world, LivingEntity caster) {
 		AxisAlignedBB box = new AxisAlignedBB(start, start).grow(0.25);
 		for (int i = 0; i < distance * 2; i++) {
 			for (Entity e : world.getEntitiesInAABBexcluding(caster, box, (e) -> e instanceof LivingEntity)) {

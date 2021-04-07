@@ -20,7 +20,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -102,10 +102,10 @@ public class ForgeEventSubscriber {
 				if (hand != null) {
 					player.setHeldItem(hand, new ItemStack(Items.AIR));
 					for (int i = 0; i < 30; i++) {
-						Vec3d position = player.getPositionVec()
+						Vector3d position = player.getPositionVec()
 								.add(player.getRNG().nextDouble() * 0.4 - 0.2, 1.5,
 										player.getRNG().nextDouble() * 0.4 - 0.2)
-								.add(Vec3d.fromPitchYaw(player.getPitchYaw()).scale(0.5));
+								.add(Vector3d.fromPitchYaw(player.getPitchYaw()).scale(0.5));
 						world.spawnParticle(ParticleTypes.FLAME, position.getX(), position.getY(), position.getZ(), 1,
 								0, 0, 0, 0.1);
 					}

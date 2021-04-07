@@ -8,8 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -40,15 +42,28 @@ public class BrandMessage {
 	public static void handle(final BrandMessage msg, final Supplier<NetworkEvent.Context> supplier) {
 		final NetworkEvent.Context context = supplier.get();
 		context.setPacketHandled(true);
-		context.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			PlayerEntity player = Minecraft.getInstance().world.getPlayerByUuid(msg.id);
-			if (player != null) {
-				Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP)
-						.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!"));
-				brand.setBrand(msg.isBrand);
-			} else {
-				System.out.println("Warning: player is null when sending Brand capability");
-			}
-		}));
+		context.enqueueWork(() -> DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> Handler.handle(msg.isBrand, msg.id)));
+	}
+
+	private static class Handler {
+		private static SafeRunnable handle(boolean isBrand, UUID id) {
+			return new SafeRunnable() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void run() {
+					World world = Minecraft.getInstance().world;
+					if (world != null) {
+						PlayerEntity player = world.getPlayerByUuid(id);
+						if (player != null) {
+							Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP)
+									.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!"));
+							brand.setBrand(isBrand);
+						}
+					}
+				}
+			};
+		}
+
 	}
 }

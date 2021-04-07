@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class PillarOfFlameRenderer extends EntityRenderer<PillarOfFlameEntity> {
 	private final BrandParticleModel model = new BrandParticleModel();
@@ -39,7 +39,7 @@ public class PillarOfFlameRenderer extends EntityRenderer<PillarOfFlameEntity> {
 			float blue = 0;
 			float direction = random.nextFloat() * 360;
 			float radius = random.nextFloat() * 2f;
-			Vec3d offset = Vec3d.fromPitchYaw(0, direction).scale(radius);
+			Vector3d offset = Vector3d.fromPitchYaw(0, direction).scale(radius);
 			matrixStackIn.push();
 
 			float scale = Helper.lerpRepeat(ageInTicks / interval, 1, 0);

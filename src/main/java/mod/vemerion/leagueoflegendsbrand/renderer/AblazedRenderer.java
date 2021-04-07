@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class AblazedRenderer extends EntityRenderer<AblazedEntity> {
 	private final BrandParticleModel model = new BrandParticleModel();
@@ -45,7 +45,7 @@ public class AblazedRenderer extends EntityRenderer<AblazedEntity> {
 			if (ageInTicks > 40) {
 				radius = 3.5f;
 			}
-			Vec3d offset = Vec3d.fromPitchYaw(random.nextFloat() * 360, random.nextFloat() * 360).scale(radius * Helper.lerpRepeat(ageInTicks / interval, 0.6f, 1.2f));
+			Vector3d offset = Vector3d.fromPitchYaw(random.nextFloat() * 360, random.nextFloat() * 360).scale(radius * Helper.lerpRepeat(ageInTicks / interval, 0.6f, 1.2f));
 			matrixStackIn.push();
 
 			float scale = Helper.lerpRepeat((ageInTicks) / interval, 2, 0);

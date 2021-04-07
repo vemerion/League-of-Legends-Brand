@@ -11,7 +11,6 @@ import mod.vemerion.leagueoflegendsbrand.model.BrandModel;
 import mod.vemerion.leagueoflegendsbrand.model.BrandParticleModel;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -20,7 +19,8 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class BrandRenderer extends PlayerRenderer {
 	public static final ResourceLocation TEXTURES = new ResourceLocation(LeagueOfLegendsBrand.MODID,
@@ -151,7 +151,7 @@ public class BrandRenderer extends PlayerRenderer {
 			float red = random.nextFloat() * 0.2f + 0.8f;
 			float green = random.nextFloat() * 0.2f + 0.3f;
 			float blue = 0;
-			Vec3d offset = new Vec3d(random.nextDouble() * 0.4 - 0.20, random.nextDouble() * 0.4 - 0.20,
+			Vector3d offset = new Vector3d(random.nextDouble() * 0.4 - 0.20, random.nextDouble() * 0.4 - 0.20,
 					random.nextDouble() * 0.4 - 0.20);
 			matrix.push();
 
