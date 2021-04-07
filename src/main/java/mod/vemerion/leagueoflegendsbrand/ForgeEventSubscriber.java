@@ -5,7 +5,6 @@ import java.util.Iterator;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.AblazedProvider;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
-import mod.vemerion.leagueoflegendsbrand.capability.BrandMessage;
 import mod.vemerion.leagueoflegendsbrand.capability.BrandProvider;
 import mod.vemerion.leagueoflegendsbrand.entity.PyroclasmEntity;
 import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
@@ -34,7 +33,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 @EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE)
 public class ForgeEventSubscriber {
@@ -54,37 +52,26 @@ public class ForgeEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void brandLoginEvent(PlayerLoggedInEvent event) {
+	public static void synchBrand(PlayerLoggedInEvent event) {
 		PlayerEntity player = event.getPlayer();
-
-		// Send message from recently logged in player
-		Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-		if (brand.isBrand())
-			BrandMessage.INSTANCE.send(PacketDistributor.ALL.noArg(),
-					new BrandMessage(brand.isBrand(), player.getUniqueID()));
-
-		// end message from other player to recently logged in player
-		for (PlayerEntity p : player.world.getPlayers()) {
-			brand = p.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-			if (brand.isBrand())
-				BrandMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-						new BrandMessage(brand.isBrand(), p.getUniqueID()));
-		}
+		Brand.syncBrand(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
-	public static void brandChangeDimensionEvent(PlayerChangedDimensionEvent event) {
+	public static void synchBrand(PlayerChangedDimensionEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-		BrandMessage.INSTANCE.send(PacketDistributor.ALL.noArg(),
-				new BrandMessage(brand.isBrand(), player.getUniqueID()));
-		
-		for (PlayerEntity p : player.world.getPlayers()) {
-			brand = p.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-			if (brand.isBrand())
-				BrandMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-						new BrandMessage(brand.isBrand(), p.getUniqueID()));
-		}
+		Brand.syncBrand(player, (ServerPlayerEntity) player);
+	}
+
+	@SubscribeEvent
+	public static void synchBrand(PlayerEvent.PlayerRespawnEvent event) {
+		PlayerEntity player = event.getPlayer();
+		Brand.syncBrand(player, (ServerPlayerEntity) player);
+	}
+	
+	@SubscribeEvent
+	public static void synchBrand(PlayerEvent.StartTracking event) {
+		Brand.syncBrand(event.getTarget(), (ServerPlayerEntity) event.getPlayer());
 	}
 
 	@SubscribeEvent
@@ -157,23 +144,6 @@ public class ForgeEventSubscriber {
 		Brand cloneBrand = event.getPlayer().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
 		Brand originalBrand = event.getOriginal().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
 		cloneBrand.setBrand(originalBrand.isBrand());
-	}
-	
-	@SubscribeEvent
-	public static void respawnBrand(PlayerEvent.PlayerRespawnEvent event) {
-		Brand brand = event.getPlayer().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-		BrandMessage.INSTANCE.send(PacketDistributor.ALL.noArg(),
-				new BrandMessage(brand.isBrand(), event.getPlayer().getUniqueID()));
-	}
-	
-	@SubscribeEvent
-	public static void loadBrand(PlayerEvent.StartTracking event) {
-		if (event.getTarget() instanceof PlayerEntity) {
-			Brand brand = event.getTarget().getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-			BrandMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.getPlayer()),
-					new BrandMessage(brand.isBrand(), event.getTarget().getUniqueID()));
-
-		}
 	}
 
 }

@@ -2,7 +2,6 @@ package mod.vemerion.leagueoflegendsbrand.item;
 
 import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
-import mod.vemerion.leagueoflegendsbrand.capability.BrandMessage;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -12,7 +11,6 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 public class SummonersRiftBrandItem extends Item {
 
@@ -50,18 +48,18 @@ public class SummonersRiftBrandItem extends Item {
 				0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
-			Brand brand = player.getCapability(LeagueOfLegendsBrand.BRAND_CAP).orElse(new Brand());
-			if (brand.isBrand()) {
-				brand.setBrand(false);
-			} else {
-				player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.SEAR_SPELL));
-				player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL));
-				player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.CONFLAGRATION_SPELL));
-				player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.PYROCLASM_SPELL));
-				brand.setBrand(true);
-			}
-			BrandMessage.INSTANCE.send(PacketDistributor.ALL.noArg(),
-					new BrandMessage(brand.isBrand(), player.getUniqueID()));
+			Brand.getBrand(player).ifPresent(brand -> {
+				if (brand.isBrand()) {
+					brand.setBrand(false);
+				} else {
+					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.SEAR_SPELL));
+					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL));
+					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.CONFLAGRATION_SPELL));
+					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.PYROCLASM_SPELL));
+					brand.setBrand(true);
+				}
+			});
+			Brand.syncBrand(player);
 		}
 		return stack;
 	}
