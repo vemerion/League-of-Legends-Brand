@@ -56,6 +56,9 @@ public class PyroclasmEntity extends BrandBallEntity {
 	protected void onEntityHit(EntityRayTraceResult result) {
 		if (!world.isRemote) {
 			Entity hitEntity = result.getEntity();
+			if (hitEntity == bouncer)
+				return;
+
 			Entity shooter = func_234616_v_();
 			if (hitEntity instanceof LivingEntity && shooter instanceof PlayerEntity) {
 				hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) shooter), 10);
@@ -63,10 +66,10 @@ public class PyroclasmEntity extends BrandBallEntity {
 						world, hitEntity);
 				fireEffect.setPosition(hitEntity.getPosX(), hitEntity.getPosY(), hitEntity.getPosZ());
 				world.addEntity(fireEffect);
-				
+
 				Ablazed ablazed = hitEntity.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());
 				if (ablazed.getAblazed() > 0) {
-					((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 5, 1));
+					((LivingEntity) hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 5, 1));
 				}
 				ablazed.incAblazed();
 
@@ -74,27 +77,29 @@ public class PyroclasmEntity extends BrandBallEntity {
 					bounce(hitEntity);
 				}
 			}
+			remove();
 		}
-		remove();
 	}
 
-	private void bounce(Entity bouncer) {
+	private void bounce(Entity hitEntity) {
 		Entity shooter = func_234616_v_();
-		List<Entity> nearby = world.getEntitiesInAABBexcluding(this, getBoundingBox().grow(5),
-				(e) -> e instanceof LivingEntity && (target == null || e.getEntityId() != target.getEntityId())
-						&& (shooter == null || e.getEntityId() != shooter.getEntityId())
-						&& e.getEntityId() != bouncer.getEntityId() && e.isAlive());
+		List<LivingEntity> nearby = world.getEntitiesWithinAABB(LivingEntity.class, getBoundingBox().grow(5),
+				e -> isValidTarget(e, hitEntity));
 		if (!nearby.isEmpty()) {
 			Entity next = nearby.get(rand.nextInt(nearby.size()));
 			Vector3d position = getPositionVec();
 			Vector3d direction = next.getEyePosition(0.5f).subtract(position);
 			PyroclasmEntity pyro = new PyroclasmEntity(LeagueOfLegendsBrand.PYROCLASM_ENTITY, position.getX(),
 					position.getY(), position.getZ(), world, next, bounces - 1);
-			pyro.bouncer = bouncer;
+			pyro.bouncer = hitEntity;
 			pyro.setShooter(shooter);
 			pyro.shoot(direction.getX(), direction.getY(), direction.getZ(), 0.3f, 0);
 			world.addEntity(pyro);
 		}
+	}
+
+	private boolean isValidTarget(Entity e, Entity hitEntity) {
+		return e != func_234616_v_() && e != hitEntity && e.isAlive();
 	}
 
 }

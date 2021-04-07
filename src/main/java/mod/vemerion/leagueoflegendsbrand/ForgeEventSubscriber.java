@@ -6,7 +6,6 @@ import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.AblazedProvider;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.capability.BrandProvider;
-import mod.vemerion.leagueoflegendsbrand.entity.PyroclasmEntity;
 import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -18,13 +17,11 @@ import net.minecraft.item.Items;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -107,19 +104,6 @@ public class ForgeEventSubscriber {
 		if (!entity.world.isRemote) {
 			Ablazed ablazed = entity.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());
 			ablazed.tick(entity);
-		}
-	}
-
-	@SubscribeEvent
-	public static void preventPyroclasmFromHittingSameTarget(ProjectileImpactEvent.Arrow event) {
-		if (event.getArrow() instanceof PyroclasmEntity) {
-			PyroclasmEntity pyro = (PyroclasmEntity) event.getArrow();
-			if (pyro.bouncer != null && event.getRayTraceResult() instanceof EntityRayTraceResult) {
-				if (((EntityRayTraceResult) event.getRayTraceResult()).getEntity().getEntityId() == pyro.bouncer
-						.getEntityId()) {
-					event.setCanceled(true);
-				}
-			}
 		}
 	}
 
