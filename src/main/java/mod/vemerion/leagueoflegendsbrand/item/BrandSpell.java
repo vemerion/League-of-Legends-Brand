@@ -32,7 +32,7 @@ public abstract class BrandSpell extends Item {
 	}
 
 	protected boolean canCast(PlayerEntity player) {
-		LazyOptional<Brand> brand = Brand.getBrand(player);
+		LazyOptional<Brand> brand = Brand.get(player);
 		return brand.isPresent() && brand.orElse(null).isBrand();
 	}
 }

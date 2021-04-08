@@ -56,7 +56,7 @@ public class BrandMessage {
 					if (world != null) {
 						PlayerEntity player = world.getPlayerByUuid(id);
 						if (player != null)
-							Brand.getBrand(player).ifPresent(b -> b.setBrand(isBrand));
+							Brand.get(player).ifPresent(b -> b.setBrand(isBrand));
 					}
 				}
 			};

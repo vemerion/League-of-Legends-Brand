@@ -48,7 +48,7 @@ public class SummonersRiftBrandItem extends Item {
 				0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
-			Brand.getBrand(player).ifPresent(brand -> {
+			Brand.get(player).ifPresent(brand -> {
 				if (brand.isBrand()) {
 					brand.setBrand(false);
 				} else {
@@ -59,7 +59,7 @@ public class SummonersRiftBrandItem extends Item {
 					brand.setBrand(true);
 				}
 			});
-			Brand.syncBrand(player);
+			Brand.sync(player);
 		}
 		return stack;
 	}

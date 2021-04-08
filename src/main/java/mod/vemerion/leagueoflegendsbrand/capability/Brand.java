@@ -56,19 +56,19 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 		setBrand(nbt.getBoolean("isBrand"));
 	}
 
-	public static LazyOptional<Brand> getBrand(Entity player) {
+	public static LazyOptional<Brand> get(Entity player) {
 		return player.getCapability(CAPABILITY);
 	}
 
-	public static void syncBrand(Entity entity) {
-		getBrand(entity).ifPresent(b -> {
+	public static void sync(Entity entity) {
+		get(entity).ifPresent(b -> {
 			BrandMessage.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
 					new BrandMessage(b.isBrand(), entity.getUniqueID()));
 		});
 	}
 
-	public static void syncBrand(Entity entity, ServerPlayerEntity reciever) {
-		getBrand(entity).ifPresent(b -> {
+	public static void sync(Entity entity, ServerPlayerEntity reciever) {
+		get(entity).ifPresent(b -> {
 			BrandMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> reciever),
 					new BrandMessage(b.isBrand(), entity.getUniqueID()));
 		});

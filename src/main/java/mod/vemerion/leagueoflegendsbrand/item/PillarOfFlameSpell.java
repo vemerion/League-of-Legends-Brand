@@ -20,7 +20,7 @@ public class PillarOfFlameSpell extends BrandSpell {
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			player.getCooldownTracker().setCooldown(this, 180);
-			Brand.getBrand(entityLiving).ifPresent(b -> {
+			Brand.get(entityLiving).ifPresent(b -> {
 				if (b.getPillarOfFlame() != null)
 					b.getPillarOfFlame().setExplode(true);
 			});
@@ -31,7 +31,7 @@ public class PillarOfFlameSpell extends BrandSpell {
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
 		if (!worldIn.isRemote)
-			Brand.getBrand(entityLiving).ifPresent(b -> {
+			Brand.get(entityLiving).ifPresent(b -> {
 				if (b.getPillarOfFlame() != null)
 					b.getPillarOfFlame().remove();
 			});
@@ -45,7 +45,7 @@ public class PillarOfFlameSpell extends BrandSpell {
 					playerIn);
 			entity.setPositionAndRotation(position.getX(), position.getY(), position.getZ(), 0, 0);
 			worldIn.addEntity(entity);
-			Brand.getBrand(playerIn).ifPresent(b -> b.setPillarOfFlame(entity));
+			Brand.get(playerIn).ifPresent(b -> b.setPillarOfFlame(entity));
 			return super.onItemRightClick(worldIn, playerIn, handIn);
 		} else {
 			return ActionResult.resultFail(playerIn.getHeldItem(handIn));

@@ -45,24 +45,24 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void synchBrand(PlayerLoggedInEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand.syncBrand(player, (ServerPlayerEntity) player);
+		Brand.sync(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
 	public static void synchBrand(PlayerChangedDimensionEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand.syncBrand(player, (ServerPlayerEntity) player);
+		Brand.sync(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
 	public static void synchBrand(PlayerEvent.PlayerRespawnEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand.syncBrand(player, (ServerPlayerEntity) player);
+		Brand.sync(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
 	public static void synchBrand(PlayerEvent.StartTracking event) {
-		Brand.syncBrand(event.getTarget(), (ServerPlayerEntity) event.getPlayer());
+		Brand.sync(event.getTarget(), (ServerPlayerEntity) event.getPlayer());
 	}
 
 	@SubscribeEvent
@@ -70,7 +70,7 @@ public class ForgeEventSubscriber {
 		if (event.side == LogicalSide.SERVER && event.phase == Phase.START) {
 			PlayerEntity player = event.player;
 			ServerWorld world = (ServerWorld) player.world;
-			Brand.getBrand(player).ifPresent(b -> {
+			Brand.get(player).ifPresent(b -> {
 				if (b.isBrand()) {
 					Hand hand = null;
 					if (player.getHeldItemMainhand().getItem().equals(Items.FILLED_MAP))
@@ -120,7 +120,7 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void readdSpellsAfterDeath(PlayerEvent.Clone event) {
 		event.getPlayer().inventory.copyInventory(event.getOriginal().inventory);
-		Brand.getBrand(event.getPlayer()).ifPresent(clone -> Brand.getBrand(event.getOriginal())
+		Brand.get(event.getPlayer()).ifPresent(clone -> Brand.get(event.getOriginal())
 				.ifPresent(original -> clone.deserializeNBT(original.serializeNBT())));
 	}
 

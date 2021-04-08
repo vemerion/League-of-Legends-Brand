@@ -28,7 +28,7 @@ public class ClientForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void renderBrand(RenderPlayerEvent.Pre event) {
-		Brand.getBrand(event.getPlayer()).ifPresent(b -> {
+		Brand.get(event.getPlayer()).ifPresent(b -> {
 			if (!(event.getRenderer() instanceof BrandRenderer) && b.isBrand()) {
 				event.setCanceled(true);
 				renderBrandTexture(event);
@@ -92,7 +92,7 @@ public class ClientForgeEventSubscriber {
 		ItemStack stack = event.getItemStack();
 		Item item = stack.getItem();
 		float partialTicks = event.getPartialTicks();
-		Brand.getBrand(player).ifPresent(b -> {
+		Brand.get(player).ifPresent(b -> {
 			if (b.isBrand()) {
 				if (player.getActiveItemStack().getItem() instanceof BrandSpell || stack.isEmpty()
 						|| item instanceof BrandSpell)
