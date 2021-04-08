@@ -91,7 +91,9 @@ public class ModEventSubscriber {
 
 	@SubscribeEvent
 	public static void setup(FMLCommonSetupEvent event) {
-		CapabilityManager.INSTANCE.register(Brand.class, new Brand.BrandStorage(), Brand::new);
+		CapabilityManager.INSTANCE.register(Brand.class, new Brand.BrandStorage(), () -> {
+			throw new UnsupportedOperationException("You are not allowed to use default instance for this capability");
+		});
 		CapabilityManager.INSTANCE.register(Ablazed.class, new IStorage<Ablazed>() {
 			@Override
 			public INBT writeNBT(Capability<Ablazed> capability, Ablazed instance, Direction side) {

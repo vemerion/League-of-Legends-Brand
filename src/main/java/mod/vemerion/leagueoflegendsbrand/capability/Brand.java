@@ -1,10 +1,15 @@
 package mod.vemerion.leagueoflegendsbrand.capability;
 
+import com.google.common.collect.ImmutableSet;
+
 import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -25,8 +30,37 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 	@CapabilityInject(Brand.class)
 	public static final Capability<Brand> CAPABILITY = null;
 
+	private static final ImmutableSet<Item> SPELLS = ImmutableSet.of(LeagueOfLegendsBrand.CONFLAGRATION_SPELL,
+			LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL, LeagueOfLegendsBrand.PYROCLASM_SPELL,
+			LeagueOfLegendsBrand.SEAR_SPELL);
+
 	private PillarOfFlameEntity pillarOfFlame;
 	private boolean isBrand;
+	private PlayerEntity player;
+
+	public Brand(PlayerEntity player) {
+		this.player = player;
+	}
+
+	public void tick() {
+		if (!player.world.isRemote)
+			if (!isBrand)
+				ItemStackHelper.func_233534_a_(player.inventory, s -> getSpells().contains(s.getItem()), -1, false);
+			else
+				addSpellsToInv();
+	}
+
+	private void addSpellsToInv() {
+		for (Item spell : getSpells()) {
+			ItemStack stack = spell.getDefaultInstance();
+			if (!player.inventory.hasItemStack(stack))
+				player.addItemStackToInventory(stack);
+		}
+	}
+
+	private ImmutableSet<Item> getSpells() {
+		return SPELLS;
+	}
 
 	public PillarOfFlameEntity getPillarOfFlame() {
 		return pillarOfFlame;
@@ -82,10 +116,15 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 		@SubscribeEvent
 		public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
 			if (event.getObject() instanceof PlayerEntity)
-				event.addCapability(LOCATION, new Provider());
+				event.addCapability(LOCATION, new Provider((PlayerEntity) event.getObject()));
 		}
 
-		private LazyOptional<Brand> instance = LazyOptional.of(Brand::new);
+		private PlayerEntity player;
+		private LazyOptional<Brand> instance = LazyOptional.of(() -> new Brand(player));
+
+		public Provider(PlayerEntity player) {
+			this.player = player;
+		}
 
 		@Override
 		public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {

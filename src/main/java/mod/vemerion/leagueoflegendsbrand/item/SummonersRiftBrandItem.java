@@ -49,15 +49,7 @@ public class SummonersRiftBrandItem extends Item {
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			Brand.get(player).ifPresent(brand -> {
-				if (brand.isBrand()) {
-					brand.setBrand(false);
-				} else {
-					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.SEAR_SPELL));
-					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL));
-					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.CONFLAGRATION_SPELL));
-					player.addItemStackToInventory(new ItemStack(LeagueOfLegendsBrand.PYROCLASM_SPELL));
-					brand.setBrand(true);
-				}
+				brand.setBrand(!brand.isBrand());
 			});
 			Brand.sync(player);
 		}

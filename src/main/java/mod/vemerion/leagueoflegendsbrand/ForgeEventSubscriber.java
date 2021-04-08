@@ -1,14 +1,10 @@
 package mod.vemerion.leagueoflegendsbrand;
 
-import java.util.Iterator;
-
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.AblazedProvider;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
-import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,7 +17,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
@@ -66,7 +61,8 @@ public class ForgeEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void burnMap(PlayerTickEvent event) {
+	public static void brandTick(PlayerTickEvent event) {
+		Brand.get(event.player).ifPresent(b -> b.tick());
 		if (event.side == LogicalSide.SERVER && event.phase == Phase.START) {
 			PlayerEntity player = event.player;
 			ServerWorld world = (ServerWorld) player.world;
@@ -101,27 +97,4 @@ public class ForgeEventSubscriber {
 			ablazed.tick(entity);
 		}
 	}
-
-	@SubscribeEvent
-	public static void preventSpellDropDeath(LivingDropsEvent event) {
-		if (event.getEntity() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) event.getEntity();
-			Iterator<ItemEntity> itr = event.getDrops().iterator();
-			while (itr.hasNext()) {
-				ItemEntity itemEntity = itr.next();
-				if (itemEntity.getItem().getItem() instanceof BrandSpell) {
-					itr.remove();
-					player.addItemStackToInventory(itemEntity.getItem());
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void readdSpellsAfterDeath(PlayerEvent.Clone event) {
-		event.getPlayer().inventory.copyInventory(event.getOriginal().inventory);
-		Brand.get(event.getPlayer()).ifPresent(clone -> Brand.get(event.getOriginal())
-				.ifPresent(original -> clone.deserializeNBT(original.serializeNBT())));
-	}
-
 }

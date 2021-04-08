@@ -1,6 +1,8 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,5 +36,15 @@ public abstract class BrandSpell extends Item {
 	protected boolean canCast(PlayerEntity player) {
 		LazyOptional<Brand> brand = Brand.get(player);
 		return brand.isPresent() && brand.orElse(null).isBrand();
+	}
+
+	@Override
+	public boolean hasCustomEntity(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+		return new ItemEntity(world, location.getPosX(), location.getPosY(), location.getPosZ(), ItemStack.EMPTY);
 	}
 }
