@@ -7,13 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -22,7 +16,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE)
@@ -62,31 +55,8 @@ public class ForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void brandTick(PlayerTickEvent event) {
-		Brand.get(event.player).ifPresent(b -> b.tick());
-		if (event.side == LogicalSide.SERVER && event.phase == Phase.START) {
-			PlayerEntity player = event.player;
-			ServerWorld world = (ServerWorld) player.world;
-			Brand.get(player).ifPresent(b -> {
-				if (b.isBrand()) {
-					Hand hand = null;
-					if (player.getHeldItemMainhand().getItem().equals(Items.FILLED_MAP))
-						hand = Hand.MAIN_HAND;
-					else if (player.getHeldItemOffhand().getItem().equals(Items.FILLED_MAP))
-						hand = Hand.OFF_HAND;
-					if (hand != null) {
-						player.setHeldItem(hand, new ItemStack(Items.AIR));
-						for (int i = 0; i < 30; i++) {
-							Vector3d position = player.getPositionVec()
-									.add(player.getRNG().nextDouble() * 0.4 - 0.2, 1.5,
-											player.getRNG().nextDouble() * 0.4 - 0.2)
-									.add(Vector3d.fromPitchYaw(player.getPitchYaw()).scale(0.5));
-							world.spawnParticle(ParticleTypes.FLAME, position.getX(), position.getY(), position.getZ(),
-									1, 0, 0, 0, 0.1);
-						}
-					}
-				}
-			});
-		}
+		if (event.phase == Phase.START)
+			Brand.get(event.player).ifPresent(b -> b.tick());
 	}
 
 	@SubscribeEvent
