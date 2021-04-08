@@ -24,22 +24,25 @@ public class ConflagrationSpell extends BrandSpell {
 			if (target != null) {
 				target.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
 				player.getCooldownTracker().setCooldown(this, 160);
-				ConflagrationEntity entity = new ConflagrationEntity(LeagueOfLegendsBrand.CONFLAGRATION_ENTITY, worldIn, target);
+				ConflagrationEntity entity = new ConflagrationEntity(LeagueOfLegendsBrand.CONFLAGRATION_ENTITY, worldIn,
+						target);
 				entity.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
 				worldIn.addEntity(entity);
-				
-				Ablazed ablazed = target.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());
-				if (ablazed.getAblazed() > 0 && target instanceof LivingEntity) {
-					for (Entity nearby : worldIn.getEntitiesInAABBexcluding(target, target.getBoundingBox().grow(2),
-							(e) -> e instanceof LivingEntity)) {
-						nearby.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed()).incAblazed();
-						nearby.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
-						entity = new ConflagrationEntity(LeagueOfLegendsBrand.CONFLAGRATION_ENTITY, worldIn, nearby);
-						entity.setPosition(nearby.getPosX(), nearby.getPosY(), nearby.getPosZ());
-						worldIn.addEntity(entity);
+
+				Ablazed.get(target).ifPresent(ablazed -> {
+					if (ablazed.get() > 0) {
+						for (Entity nearby : worldIn.getEntitiesInAABBexcluding(target, target.getBoundingBox().grow(2),
+								(e) -> e instanceof LivingEntity && e != player)) {
+							Ablazed.get(nearby).ifPresent(a -> a.inc());
+							nearby.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
+							ConflagrationEntity extra = new ConflagrationEntity(
+									LeagueOfLegendsBrand.CONFLAGRATION_ENTITY, worldIn, nearby);
+							extra.setPosition(nearby.getPosX(), nearby.getPosY(), nearby.getPosZ());
+							worldIn.addEntity(extra);
+						}
 					}
-				}
-				ablazed.incAblazed();
+					ablazed.inc();
+				});
 			}
 		}
 		return stack;

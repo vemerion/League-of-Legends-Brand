@@ -1,6 +1,5 @@
 package mod.vemerion.leagueoflegendsbrand;
 
-import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
@@ -9,8 +8,6 @@ import mod.vemerion.leagueoflegendsbrand.entity.SearEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -62,8 +59,4 @@ public class LeagueOfLegendsBrand {
 
 	@ObjectHolder("league-of-legends-brand:fireball_woosh_sound")
 	public static final SoundEvent FIREBALL_WOOSH_SOUND = null;    
-
-	@CapabilityInject(Ablazed.class)
-	public static final Capability<Ablazed> ABLAZED_CAP = null;
-
 }

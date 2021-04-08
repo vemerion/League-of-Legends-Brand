@@ -3,6 +3,7 @@ package mod.vemerion.leagueoflegendsbrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.capability.BrandMessage;
+import mod.vemerion.leagueoflegendsbrand.capability.CompoundStorage;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
@@ -16,12 +17,8 @@ import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftBrandItem;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -91,20 +88,12 @@ public class ModEventSubscriber {
 
 	@SubscribeEvent
 	public static void setup(FMLCommonSetupEvent event) {
-		CapabilityManager.INSTANCE.register(Brand.class, new Brand.BrandStorage(), () -> {
+		CapabilityManager.INSTANCE.register(Brand.class, new CompoundStorage<>(), () -> {
 			throw new UnsupportedOperationException("You are not allowed to use default instance for this capability");
 		});
-		CapabilityManager.INSTANCE.register(Ablazed.class, new IStorage<Ablazed>() {
-			@Override
-			public INBT writeNBT(Capability<Ablazed> capability, Ablazed instance, Direction side) {
-				return null;
-			}
-
-			@Override
-			public void readNBT(Capability<Ablazed> capability, Ablazed instance, Direction side, INBT nbt) {
-			}
-		}, Ablazed::new);
-
+		CapabilityManager.INSTANCE.register(Ablazed.class, new CompoundStorage<>(), () -> {
+			throw new UnsupportedOperationException("You are not allowed to use default instance for this capability");
+		});
 		BrandMessage.INSTANCE.registerMessage(0, BrandMessage.class, BrandMessage::encode, BrandMessage::decode,
 				BrandMessage::handle);
 

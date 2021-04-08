@@ -1,6 +1,5 @@
 package mod.vemerion.leagueoflegendsbrand.entity;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -21,11 +20,11 @@ public class SearEntity extends BrandBallEntity {
 	public SearEntity(EntityType<? extends SearEntity> type, double x, double y, double z, World worldIn) {
 		super(type, x, y, z, worldIn);
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
-		
+
 		if (!world.isRemote && ticksExisted > 25) {
 			remove();
 		}
@@ -37,13 +36,13 @@ public class SearEntity extends BrandBallEntity {
 			Entity target = result.getEntity();
 			Entity shooter = func_234616_v_();
 			if (target instanceof LivingEntity && shooter instanceof PlayerEntity) {
-				target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity)shooter), 4);
-				Ablazed ablazed = target.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());
-				if (ablazed.getAblazed() > 0 && target instanceof LivingEntity) {
-					((LivingEntity)target).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 30, 10));
-
-				}
-				ablazed.incAblazed();
+				target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) shooter), 4);
+				Ablazed.get(target).ifPresent(ablazed -> {
+					if (ablazed.get() > 0 && target instanceof LivingEntity) {
+						((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 30, 10));
+					}
+					ablazed.inc();
+				});
 			}
 		}
 		remove();

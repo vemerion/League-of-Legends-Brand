@@ -67,11 +67,12 @@ public class PyroclasmEntity extends BrandBallEntity {
 				fireEffect.setPosition(hitEntity.getPosX(), hitEntity.getPosY(), hitEntity.getPosZ());
 				world.addEntity(fireEffect);
 
-				Ablazed ablazed = hitEntity.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());
-				if (ablazed.getAblazed() > 0) {
-					((LivingEntity) hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 5, 1));
-				}
-				ablazed.incAblazed();
+				Ablazed.get(hitEntity).ifPresent(ablazed -> {
+					if (ablazed.get() > 0) {
+						((LivingEntity) hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 5, 1));
+					}
+					ablazed.inc();
+				});
 
 				if (bounces > 0) {
 					bounce(hitEntity);

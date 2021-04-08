@@ -14,23 +14,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class Brand implements INBTSerializable<CompoundNBT> {
@@ -138,58 +130,5 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 			BrandMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> reciever),
 					new BrandMessage(b.isBrand(), entity.getUniqueID()));
 		});
-	}
-
-	@EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE)
-	public static class Provider implements ICapabilitySerializable<INBT> {
-
-		public static final ResourceLocation LOCATION = new ResourceLocation(LeagueOfLegendsBrand.MODID, "brand");
-
-		@SubscribeEvent
-		public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
-			if (event.getObject() instanceof PlayerEntity)
-				event.addCapability(LOCATION, new Provider((PlayerEntity) event.getObject()));
-		}
-
-		private PlayerEntity player;
-		private LazyOptional<Brand> instance = LazyOptional.of(() -> new Brand(player));
-
-		public Provider(PlayerEntity player) {
-			this.player = player;
-		}
-
-		@Override
-		public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-			return CAPABILITY.orEmpty(cap, instance);
-		}
-
-		@Override
-		public INBT serializeNBT() {
-			return CAPABILITY.writeNBT(
-					instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
-		}
-
-		@Override
-		public void deserializeNBT(INBT nbt) {
-			CAPABILITY.readNBT(
-					instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null,
-					nbt);
-		}
-
-	}
-
-	public static class BrandStorage implements IStorage<Brand> {
-
-		@Override
-		public INBT writeNBT(Capability<Brand> capability, Brand instance, Direction side) {
-			return instance.serializeNBT();
-
-		}
-
-		@Override
-		public void readNBT(Capability<Brand> capability, Brand instance, Direction side, INBT nbt) {
-			instance.deserializeNBT((CompoundNBT) nbt);
-		}
-
 	}
 }

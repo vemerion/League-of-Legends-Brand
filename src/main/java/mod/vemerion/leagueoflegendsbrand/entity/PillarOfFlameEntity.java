@@ -16,17 +16,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class PillarOfFlameEntity extends Entity {
-	
+
 	private static final DataParameter<Boolean> EXPLODE = EntityDataManager.createKey(PillarOfFlameEntity.class,
 			DataSerializers.BOOLEAN);
-	
+
 	private PlayerEntity owner;
-	
+
 	public PillarOfFlameEntity(EntityType<? extends PillarOfFlameEntity> entityTypeIn, World worldIn) {
 		super(entityTypeIn, worldIn);
 	}
 
-	public PillarOfFlameEntity(EntityType<? extends PillarOfFlameEntity> entityTypeIn, World worldIn, PlayerEntity owner) {
+	public PillarOfFlameEntity(EntityType<? extends PillarOfFlameEntity> entityTypeIn, World worldIn,
+			PlayerEntity owner) {
 		super(entityTypeIn, worldIn);
 		this.owner = owner;
 	}
@@ -37,22 +38,23 @@ public class PillarOfFlameEntity extends Entity {
 
 		if (ticksExisted % 5 == 0 && ticksExisted < 20)
 			playSound(LeagueOfLegendsBrand.BURNING_SOUND, 1.3f, 0.8f + rand.nextFloat() * 0.4f);
-		
+
 		if (!world.isRemote) {
 			if (ticksExisted == 14 && canExplode()) {
 
-				for (Entity e : world.getEntitiesInAABBexcluding(this, getBoundingBox().grow(1),
-						(e) -> e instanceof LivingEntity)) {
-					float damage = 5;
-					Ablazed ablazed = e.getCapability(LeagueOfLegendsBrand.ABLAZED_CAP).orElse(new Ablazed());
-					if (ablazed.getAblazed() > 0) {
-						damage += 2;
-					}
-					ablazed.incAblazed();
-					if (owner != null)
-						e.attackEntityFrom(DamageSource.causePlayerDamage(owner), damage);
-					else
-						e.attackEntityFrom(DamageSource.IN_FIRE, damage);
+				for (LivingEntity e : world.getEntitiesWithinAABB(LivingEntity.class, getBoundingBox().grow(1))) {
+					Ablazed.get(e).ifPresent(ablazed -> {
+						float damage = 5;
+						if (ablazed.get() > 0) {
+							damage += 2;
+						}
+						ablazed.inc();
+						if (owner != null)
+							e.attackEntityFrom(DamageSource.causePlayerDamage(owner), damage);
+						else
+							e.attackEntityFrom(DamageSource.IN_FIRE, damage);
+
+					});
 				}
 			}
 
@@ -65,7 +67,7 @@ public class PillarOfFlameEntity extends Entity {
 	protected void registerData() {
 		dataManager.register(EXPLODE, false);
 	}
-	
+
 	public boolean canExplode() {
 		return dataManager.get(EXPLODE);
 	}
