@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.helper.Helper;
 import mod.vemerion.leagueoflegendsbrand.model.BrandModel;
-import mod.vemerion.leagueoflegendsbrand.model.BrandParticleModel;
+import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -129,27 +129,17 @@ public class BrandRenderer extends PlayerRenderer {
 	public static void renderBurning(int count, PlayerEntity player, MatrixStack matrix, IRenderTypeBuffer buffers,
 			float partialTicks, int light) {
 		float ageInTicks = player.ticksExisted + partialTicks;
-		BrandParticleModel model = new BrandParticleModel();
-		IVertexBuilder ivertexbuilder = buffers.getBuffer(model.getRenderType(BrandParticleModel.TEXTURE_LOCATION));
+		CubeModel model = new CubeModel();
+		IVertexBuilder ivertexbuilder = buffers.getBuffer(model.getRenderType(model.getTexture()));
 		Random random = new Random(0);
 		for (int i = 0; i < count; i++) {
 			int interval = random.nextInt(12) + 12;
-			float red = random.nextFloat() * 0.2f + 0.8f;
-			float green = random.nextFloat() * 0.2f + 0.3f;
-			float blue = 0;
 			Vector3d offset = new Vector3d(random.nextDouble() * 0.4 - 0.20, random.nextDouble() * 0.4 - 0.20,
-					random.nextDouble() * 0.4 - 0.20);
-			matrix.push();
+					random.nextDouble() * 0.4 - 0.20).add(0, 0, Helper.lerpRepeat(ageInTicks / interval, 0, 0.8f));
 
 			float scale = Helper.lerpRepeat(ageInTicks / interval, 1, 0);
-			matrix.translate(offset.getX(), offset.getY(), offset.getZ());
-			matrix.translate(0, 1, 0);
-			matrix.rotate(new Quaternion(-90, 0, 0, true));
-			matrix.translate(0, -1, 0);
-			matrix.scale(scale, scale, scale);
 
-			model.render(matrix, ivertexbuilder, light, OverlayTexture.NO_OVERLAY, red, green, blue, 1);
-			matrix.pop();
+			model.render(random, ageInTicks, scale, offset, matrix, ivertexbuilder, light);
 		}
 	}
 }
