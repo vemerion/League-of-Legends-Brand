@@ -9,8 +9,7 @@ import mod.vemerion.leagueoflegendsbrand.entity.PyroclasmEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.SearEntity;
 import mod.vemerion.leagueoflegendsbrand.item.ConflagrationSpell;
 import mod.vemerion.leagueoflegendsbrand.item.PillarOfFlameSpell;
-import mod.vemerion.leagueoflegendsbrand.item.PyroclasmSpell;
-import mod.vemerion.leagueoflegendsbrand.item.SearSpell;
+import mod.vemerion.leagueoflegendsbrand.item.ProjectileSpell;
 import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftBrandItem;
 import mod.vemerion.leagueoflegendsbrand.network.BrandMessage;
 import mod.vemerion.leagueoflegendsbrand.network.BurningMessage;
@@ -22,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -33,10 +33,12 @@ public class ModEventSubscriber {
 
 	@SubscribeEvent
 	public static void registerItem(RegistryEvent.Register<Item> event) {
-		event.getRegistry().register(setup(new SearSpell(), "sear_spell"));
+		event.getRegistry().register(setup(new ProjectileSpell(Lazy.of(() -> LeagueOfLegendsBrand.SEAR_ENTITY), 0.5f,
+				140, Lazy.of(() -> LeagueOfLegendsBrand.FIREBALL_SOUND)), "sear_spell"));
 		event.getRegistry().register(setup(new PillarOfFlameSpell(), "pillar_of_flame_spell"));
 		event.getRegistry().register(setup(new ConflagrationSpell(), "conflagration_spell"));
-		event.getRegistry().register(setup(new PyroclasmSpell(), "pyroclasm_spell"));
+		event.getRegistry().register(setup(new ProjectileSpell(Lazy.of(() -> LeagueOfLegendsBrand.PYROCLASM_ENTITY),
+				0.7f, 1000, Lazy.of(() -> LeagueOfLegendsBrand.FIREBALL_WOOSH_SOUND)), "pyroclasm_spell"));
 		event.getRegistry().register(setup(new SummonersRiftBrandItem(), "summoners_rift_brand_item"));
 
 	}

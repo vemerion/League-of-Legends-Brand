@@ -16,6 +16,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class PyroclasmEntity extends BrandBallEntity {
+	
+	private static final int MAX_BOUNCES = 4;
 
 	private Entity target;
 	private int bounces;
@@ -23,10 +25,7 @@ public class PyroclasmEntity extends BrandBallEntity {
 
 	public PyroclasmEntity(EntityType<? extends PyroclasmEntity> type, World world) {
 		super(type, world);
-	}
-
-	public PyroclasmEntity(EntityType<? extends PyroclasmEntity> type, double x, double y, double z, World worldIn) {
-		super(type, x, y, z, worldIn);
+		this.bounces = MAX_BOUNCES;
 	}
 
 	public PyroclasmEntity(EntityType<? extends PyroclasmEntity> type, double x, double y, double z, World worldIn,
