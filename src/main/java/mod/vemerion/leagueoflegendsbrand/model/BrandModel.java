@@ -1,8 +1,11 @@
 package mod.vemerion.leagueoflegendsbrand.model;
 
-import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
+import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.HandSide;
 
 public class BrandModel extends PlayerModel<AbstractClientPlayerEntity> {
 
@@ -11,16 +14,17 @@ public class BrandModel extends PlayerModel<AbstractClientPlayerEntity> {
 	}
 
 	@Override
-	public void setRotationAngles(AbstractClientPlayerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks,
-			float netHeadYaw, float headPitch) {
+	public void setRotationAngles(AbstractClientPlayerEntity entityIn, float limbSwing, float limbSwingAmount,
+			float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		if (entityIn.getActiveItemStack().getItem() instanceof BrandSpell) {
-			bipedLeftArm.rotateAngleX = -(float)Math.PI / 2;
-			bipedLeftArm.rotateAngleY = (float)Math.PI / 10;
-			bipedLeftArm.rotateAngleZ = 0;
-			bipedRightArm.rotateAngleX = -(float)Math.PI / 2;
-			bipedRightArm.rotateAngleY = -(float)Math.PI / 10;
-			bipedRightArm.rotateAngleZ = 0;
-		}
+		Brand.get(entityIn).ifPresent(b -> {
+			if (b.isSpell(entityIn.getActiveItemStack().getItem()))
+				for (HandSide side : HandSide.values()) {
+					ModelRenderer arm = getArmForSide(side);
+					arm.rotateAngleX = -ClientHelper.toRad(90);
+					arm.rotateAngleY = ClientHelper.toRad(20) * (side == HandSide.LEFT ? 1 : -1);
+					arm.rotateAngleZ = 0;
+				}
+		});
 	}
 }

@@ -81,6 +81,10 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 				player.addItemStackToInventory(stack);
 		}
 	}
+	
+	public boolean isSpell(Item item) {
+		return getSpells().contains(item);
+	}
 
 	private ImmutableSet<Item> getSpells() {
 		return SPELLS;
