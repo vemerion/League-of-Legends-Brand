@@ -1,7 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -31,7 +31,7 @@ public class SummonersRiftBrandItem extends Item {
 	@Override
 	public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
 		if (count % 5 == 0)
-			livingEntityIn.playSound(LeagueOfLegendsBrand.BURNING_SOUND, 1.5f,
+			livingEntityIn.playSound(ModSounds.BURNING, 1.5f,
 					0.9f + livingEntityIn.getRNG().nextFloat() * 0.2f);
 	}
 
@@ -44,7 +44,7 @@ public class SummonersRiftBrandItem extends Item {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		entityLiving.playSound(LeagueOfLegendsBrand.EXPLOSION_SOUND, 0.6f,
+		entityLiving.playSound(ModSounds.EXPLOSION, 0.6f,
 				0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;

@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.Main;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.vector.Vector3d;
  * Created using Tabula 8.0.0
  */
 public class CubeModel extends Model {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(LeagueOfLegendsBrand.MODID,
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID,
 			"textures/brand_particle.png");
 
 	private static final CubeModel CUBE = new CubeModel();

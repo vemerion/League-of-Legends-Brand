@@ -1,6 +1,6 @@
 package mod.vemerion.leagueoflegendsbrand.entity;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,14 +23,14 @@ public class AblazedEntity extends BurningEntity {
 		super.tick();
 		
 		if (ticksExisted % 5 == 0)
-			playSound(LeagueOfLegendsBrand.BURNING_SOUND, 1.3f, 0.8f + rand.nextFloat() * 0.4f);
+			playSound(ModSounds.BURNING, 1.3f, 0.8f + rand.nextFloat() * 0.4f);
 		
 		if (!world.isRemote) {
 			if (ticksExisted > 60)
 				remove();
 			
 			if (ticksExisted == 40) {
-				playSound(LeagueOfLegendsBrand.EXPLOSION_SOUND, 1f, 0.65f + rand.nextFloat() * 0.4f);
+				playSound(ModSounds.EXPLOSION, 1f, 0.65f + rand.nextFloat() * 0.4f);
 				for (Entity e : world.getEntitiesInAABBexcluding(this, getBoundingBox().grow(3), (e) -> e instanceof LivingEntity)) {
 					e.attackEntityFrom(DamageSource.IN_FIRE, 6);
 				}

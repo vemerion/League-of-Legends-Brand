@@ -2,8 +2,9 @@ package mod.vemerion.leagueoflegendsbrand.entity;
 
 import java.util.List;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
+import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -45,7 +46,7 @@ public class PyroclasmEntity extends BrandBallEntity {
 			if (target != null && target.isAlive()) {
 				shoot(target.getPosX() - getPosX(), target.getEyePosition(0).getY() - getPosY(),
 						target.getPosZ() - getPosZ(), 0.3f, 0);
-				playSound(LeagueOfLegendsBrand.FIREBALL_WOOSH_SOUND, 2f, 0.8f + rand.nextFloat() * 0.4f);
+				playSound(ModSounds.FIREBALL_WOOSH, 2f, 0.8f + rand.nextFloat() * 0.4f);
 
 			}
 		}
@@ -86,7 +87,7 @@ public class PyroclasmEntity extends BrandBallEntity {
 			Entity next = nearby.get(rand.nextInt(nearby.size()));
 			Vector3d position = getPositionVec();
 			Vector3d direction = next.getEyePosition(0.5f).subtract(position);
-			PyroclasmEntity pyro = new PyroclasmEntity(LeagueOfLegendsBrand.PYROCLASM_ENTITY, position.getX(),
+			PyroclasmEntity pyro = new PyroclasmEntity(ModEntities.PYROCLASM, position.getX(),
 					position.getY(), position.getZ(), world, next, bounces - 1);
 			pyro.bouncer = hitEntity;
 			pyro.setShooter(shooter);

@@ -1,7 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +15,7 @@ public class ConflagrationSpell extends BrandSpell {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		entityLiving.playSound(LeagueOfLegendsBrand.FIREBALL_SPELL, 1, 0.8f + entityLiving.getRNG().nextFloat() * 0.4f);
+		entityLiving.playSound(ModSounds.FIREBALL_SPELL, 1, 0.8f + entityLiving.getRNG().nextFloat() * 0.4f);
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			Entity target = findTarget(entityLiving.getPositionVec().add(0, 1.6, 0),

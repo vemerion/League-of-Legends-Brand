@@ -1,5 +1,6 @@
-package mod.vemerion.leagueoflegendsbrand;
+package mod.vemerion.leagueoflegendsbrand.eventsubscriber;
 
+import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +14,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.FORGE)
 public class ForgeEventSubscriber {
 
 	@SubscribeEvent

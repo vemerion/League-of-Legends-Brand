@@ -1,7 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.capability;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
+import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
 import mod.vemerion.leagueoflegendsbrand.network.BurningMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.Entity;
@@ -61,7 +61,7 @@ public class Ablazed implements INBTSerializable<CompoundNBT> {
 
 			if (count == ABLAZE_COUNT) {
 				set(1);
-				AblazedEntity ablazed = new AblazedEntity(LeagueOfLegendsBrand.ABLAZED_ENTITY, entity.world, entity);
+				AblazedEntity ablazed = new AblazedEntity(ModEntities.ABLAZED, entity.world, entity);
 				ablazed.setPosition(entity.getPosX(), entity.getPosY(), entity.getPosZ());
 				entity.world.addEntity(ablazed);
 			}

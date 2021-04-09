@@ -5,7 +5,7 @@ import java.util.Random;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.helper.Helper;
 import mod.vemerion.leagueoflegendsbrand.model.BrandModel;
 import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
@@ -25,7 +25,7 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class BrandRenderer extends PlayerRenderer {
-	public static final ResourceLocation TEXTURES = new ResourceLocation(LeagueOfLegendsBrand.MODID,
+	public static final ResourceLocation TEXTURES = new ResourceLocation(Main.MODID,
 			"textures/entity/brand.png");
 
 	public BrandRenderer(EntityRendererManager renderManager) {

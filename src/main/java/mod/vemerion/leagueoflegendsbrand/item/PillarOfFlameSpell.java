@@ -1,8 +1,8 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
+import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -41,7 +41,7 @@ public class PillarOfFlameSpell extends BrandSpell {
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		Vector3d position = aoEPlacement(worldIn, playerIn);
 		if (position != null && canCast(playerIn)) {
-			PillarOfFlameEntity entity = new PillarOfFlameEntity(LeagueOfLegendsBrand.PILLAR_OF_FLAME_ENTITY, worldIn,
+			PillarOfFlameEntity entity = new PillarOfFlameEntity(ModEntities.PILLAR_OF_FLAME, worldIn,
 					playerIn);
 			entity.setPositionAndRotation(position.getX(), position.getY(), position.getZ(), 0, 0);
 			worldIn.addEntity(entity);

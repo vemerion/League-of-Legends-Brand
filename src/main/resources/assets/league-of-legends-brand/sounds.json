@@ -1,33 +1,29 @@
 {
-  "burning_sound": {
-    "category": "hostile",
+  "burning": {
     "sounds": [
       {
-        "name": "league-of-legends-brand:burning_sound",
+        "name": "league-of-legends-brand:burning",
         "stream": false
       }
     ]
   },
-  "explosion_sound": {
-    "category": "hostile",
+  "explosion": {
     "sounds": [
       {
-        "name": "league-of-legends-brand:explosion_sound",
+        "name": "league-of-legends-brand:explosion",
         "stream": false
       }
     ]
   },
-  "fireball_sound": {
-    "category": "hostile",
+  "fireball": {
     "sounds": [
       {
-        "name": "league-of-legends-brand:fireball_sound",
+        "name": "league-of-legends-brand:fireball",
         "stream": false
       }
     ]
   },
   "fireball_spell": {
-    "category": "hostile",
     "sounds": [
       {
         "name": "league-of-legends-brand:fireball_spell",
@@ -35,11 +31,10 @@
       }
     ]
   },
-  "fireball_woosh_sound": {
-    "category": "hostile",
+  "fireball_woosh": {
     "sounds": [
       {
-        "name": "league-of-legends-brand:fireball_woosh_sound",
+        "name": "league-of-legends-brand:fireball_woosh",
         "stream": false
       }
     ]

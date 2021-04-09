@@ -1,9 +1,10 @@
-package mod.vemerion.leagueoflegendsbrand;
+package mod.vemerion.leagueoflegendsbrand.lootmodifier;
 
 import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import mod.vemerion.leagueoflegendsbrand.init.ModItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
@@ -16,9 +17,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 
-public class SummonersRiftBrandModifier extends LootModifier {
+public class SummonersRiftBrandLootModifier extends LootModifier {
 
-	protected SummonersRiftBrandModifier(ILootCondition[] conditionsIn) {
+	protected SummonersRiftBrandLootModifier(ILootCondition[] conditionsIn) {
 		super(conditionsIn);
 	}
 
@@ -27,21 +28,21 @@ public class SummonersRiftBrandModifier extends LootModifier {
 		BlockPos pos = new BlockPos(context.get(LootParameters.field_237457_g_));
 		TileEntity te = pos == null ? null : context.getWorld().getTileEntity(pos);
 		if (te instanceof LockableLootTileEntity && context.getWorld().getDimensionKey() == World.THE_NETHER) {
-			generatedLoot.add(new ItemStack(LeagueOfLegendsBrand.SUMMONERS_RIFT_BRAND_ITEM));
+			generatedLoot.add(new ItemStack(ModItems.SUMMONERS_RIFT_BRAND));
 		}
 		return generatedLoot;
 	}
 
-	public static class Serializer extends GlobalLootModifierSerializer<SummonersRiftBrandModifier> {
+	public static class Serializer extends GlobalLootModifierSerializer<SummonersRiftBrandLootModifier> {
 
 		@Override
-		public SummonersRiftBrandModifier read(ResourceLocation name, JsonObject object,
+		public SummonersRiftBrandLootModifier read(ResourceLocation name, JsonObject object,
 				ILootCondition[] conditionsIn) {
-			return new SummonersRiftBrandModifier(conditionsIn);
+			return new SummonersRiftBrandLootModifier(conditionsIn);
 		}
 
 		@Override
-		public JsonObject write(SummonersRiftBrandModifier instance) {
+		public JsonObject write(SummonersRiftBrandLootModifier instance) {
 			return makeConditions(instance.conditions);
 		}
 	}

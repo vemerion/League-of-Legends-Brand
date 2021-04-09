@@ -3,7 +3,7 @@ package mod.vemerion.leagueoflegendsbrand.capability;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.Main;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,11 +18,11 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.FORGE)
 public class EntityCapabilityProvider<E extends Entity, C> implements ICapabilitySerializable<INBT> {
 
-	public static final ResourceLocation ABLAZED_LOC = new ResourceLocation(LeagueOfLegendsBrand.MODID, "ablazed");
-	public static final ResourceLocation BRAND_LOC = new ResourceLocation(LeagueOfLegendsBrand.MODID, "brand");
+	public static final ResourceLocation ABLAZED_LOC = new ResourceLocation(Main.MODID, "ablazed");
+	public static final ResourceLocation BRAND_LOC = new ResourceLocation(Main.MODID, "brand");
 
 	@SubscribeEvent
 	public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {

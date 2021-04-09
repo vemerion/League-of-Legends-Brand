@@ -3,7 +3,7 @@ package mod.vemerion.leagueoflegendsbrand.renderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.model.BrandModel;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -17,7 +17,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class GlowingBrandLayer
 		extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
-	public static final ResourceLocation TEXTURES = new ResourceLocation(LeagueOfLegendsBrand.MODID,
+	public static final ResourceLocation TEXTURES = new ResourceLocation(Main.MODID,
 			"textures/entity/fire_layer.png");
 	private final BrandModel model = new BrandModel(0.1f);
 

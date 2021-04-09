@@ -1,9 +1,11 @@
-package mod.vemerion.leagueoflegendsbrand;
+package mod.vemerion.leagueoflegendsbrand.eventsubscriber;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.init.ModItems;
 import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
 import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
 import mod.vemerion.leagueoflegendsbrand.renderer.BrandRenderer;
@@ -27,7 +29,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEventSubscriber {
 
 	@SubscribeEvent
@@ -83,7 +85,7 @@ public class ClientForgeEventSubscriber {
 		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
 		Item item = event.getItemStack().getItem();
 		ItemStack itemStack = event.getItemStack();
-		if (item == LeagueOfLegendsBrand.SUMMONERS_RIFT_BRAND_ITEM && player.getActiveItemStack().equals(itemStack)) {
+		if (item == ModItems.SUMMONERS_RIFT_BRAND && player.getActiveItemStack().equals(itemStack)) {
 			event.setCanceled(true);
 			MatrixStack matrix = event.getMatrixStack();
 			float progress = player.ticksExisted + event.getPartialTicks();
@@ -122,16 +124,16 @@ public class ClientForgeEventSubscriber {
 						float progress = (maxProgress
 								- ((float) player.getItemInUseCount() - (float) event.getPartialTicks() + 1.0f))
 								/ maxProgress;
-						if (item.equals(LeagueOfLegendsBrand.SEAR_SPELL)) {
+						if (item.equals(ModItems.SEAR)) {
 							renderer.renderSear(progress, event.getMatrixStack(), event.getBuffers(), event.getLight(),
 									player, partialTicks);
-						} else if (item.equals(LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL)) {
+						} else if (item.equals(ModItems.PILLAR_OF_FLAME)) {
 							renderer.renderPillarOfFlame(progress, event.getMatrixStack(), event.getBuffers(),
 									event.getLight(), player, partialTicks);
-						} else if (item.equals(LeagueOfLegendsBrand.CONFLAGRATION_SPELL)) {
+						} else if (item.equals(ModItems.CONFLAGRATION)) {
 							renderer.renderConflagration(progress, event.getMatrixStack(), event.getBuffers(),
 									event.getLight(), player, partialTicks);
-						} else if (item.equals(LeagueOfLegendsBrand.PYROCLASM_SPELL)) {
+						} else if (item.equals(ModItems.PYROCLASM)) {
 							renderer.renderPyroclasm(progress, event.getMatrixStack(), event.getBuffers(),
 									event.getLight(), player, partialTicks);
 						}

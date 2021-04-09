@@ -4,8 +4,8 @@ import java.util.Random;
 
 import com.google.common.collect.ImmutableSet;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
+import mod.vemerion.leagueoflegendsbrand.init.ModItems;
 import mod.vemerion.leagueoflegendsbrand.network.BrandMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.Entity;
@@ -31,10 +31,6 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 
 	@CapabilityInject(Brand.class)
 	public static final Capability<Brand> CAPABILITY = null;
-
-	private static final ImmutableSet<Item> SPELLS = ImmutableSet.of(LeagueOfLegendsBrand.CONFLAGRATION_SPELL,
-			LeagueOfLegendsBrand.PILLAR_OF_FLAME_SPELL, LeagueOfLegendsBrand.PYROCLASM_SPELL,
-			LeagueOfLegendsBrand.SEAR_SPELL);
 
 	private PillarOfFlameEntity pillarOfFlame;
 	private boolean isBrand;
@@ -89,7 +85,9 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 	}
 
 	private ImmutableSet<Item> getSpells() {
-		return SPELLS;
+		return ImmutableSet.of(ModItems.CONFLAGRATION,
+				ModItems.PILLAR_OF_FLAME, ModItems.PYROCLASM,
+				ModItems.SEAR);
 	}
 
 	public PillarOfFlameEntity getPillarOfFlame() {

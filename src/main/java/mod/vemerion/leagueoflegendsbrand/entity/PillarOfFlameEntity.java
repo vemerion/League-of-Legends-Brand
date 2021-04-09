@@ -1,7 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.entity;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -37,7 +37,7 @@ public class PillarOfFlameEntity extends Entity {
 		super.tick();
 
 		if (ticksExisted % 5 == 0 && ticksExisted < 20)
-			playSound(LeagueOfLegendsBrand.BURNING_SOUND, 1.3f, 0.8f + rand.nextFloat() * 0.4f);
+			playSound(ModSounds.BURNING, 1.3f, 0.8f + rand.nextFloat() * 0.4f);
 
 		if (!world.isRemote) {
 			if (ticksExisted == 14 && canExplode()) {

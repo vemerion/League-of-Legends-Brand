@@ -1,5 +1,5 @@
 {
-  "type": "league-of-legends-brand:summoners_rift_brand_dungeon_loot",
+  "type": "league-of-legends-brand:summoners_rift_brand",
   "conditions": [
     {
       "condition": "minecraft:random_chance",
