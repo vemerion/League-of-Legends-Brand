@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableSet;
 
 import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
+import mod.vemerion.leagueoflegendsbrand.network.BrandMessage;
+import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -124,14 +126,14 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 
 	public static void sync(Entity entity) {
 		get(entity).ifPresent(b -> {
-			BrandMessage.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
+			Network.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
 					new BrandMessage(b.isBrand(), entity.getUniqueID()));
 		});
 	}
 
 	public static void sync(Entity entity, ServerPlayerEntity reciever) {
 		get(entity).ifPresent(b -> {
-			BrandMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> reciever),
+			Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> reciever),
 					new BrandMessage(b.isBrand(), entity.getUniqueID()));
 		});
 	}

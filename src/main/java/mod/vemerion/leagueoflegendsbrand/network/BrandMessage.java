@@ -1,27 +1,19 @@
-package mod.vemerion.leagueoflegendsbrand.capability;
+package mod.vemerion.leagueoflegendsbrand.network;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
+import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class BrandMessage {
-	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(LeagueOfLegendsBrand.MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals);
-
 	private boolean isBrand;
 	private UUID id;
 

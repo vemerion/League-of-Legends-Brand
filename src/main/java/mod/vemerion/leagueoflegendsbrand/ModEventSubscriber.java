@@ -2,7 +2,6 @@ package mod.vemerion.leagueoflegendsbrand;
 
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
-import mod.vemerion.leagueoflegendsbrand.capability.BrandMessage;
 import mod.vemerion.leagueoflegendsbrand.capability.CompoundStorage;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
@@ -14,6 +13,8 @@ import mod.vemerion.leagueoflegendsbrand.item.PillarOfFlameSpell;
 import mod.vemerion.leagueoflegendsbrand.item.PyroclasmSpell;
 import mod.vemerion.leagueoflegendsbrand.item.SearSpell;
 import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftBrandItem;
+import mod.vemerion.leagueoflegendsbrand.network.BrandMessage;
+import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -94,7 +95,7 @@ public class ModEventSubscriber {
 		CapabilityManager.INSTANCE.register(Ablazed.class, new CompoundStorage<>(), () -> {
 			throw new UnsupportedOperationException("You are not allowed to use default instance for this capability");
 		});
-		BrandMessage.INSTANCE.registerMessage(0, BrandMessage.class, BrandMessage::encode, BrandMessage::decode,
+		Network.INSTANCE.registerMessage(Network.index(), BrandMessage.class, BrandMessage::encode, BrandMessage::decode,
 				BrandMessage::handle);
 
 	}
