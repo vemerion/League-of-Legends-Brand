@@ -1,11 +1,10 @@
 package mod.vemerion.leagueoflegendsbrand.network;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
-import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,32 +12,29 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class BrandMessage {
-	private boolean isBrand;
-	private UUID id;
+public class BurningMessage {
+	private int id;
 
-	public BrandMessage(boolean isBrand, UUID id) {
-		this.isBrand = isBrand;
+	public BurningMessage(int id) {
 		this.id = id;
 	}
 
 	public void encode(PacketBuffer buffer) {
-		buffer.writeBoolean(isBrand);
-		buffer.writeUniqueId(id);
+		buffer.writeInt(id);
 	}
 
-	public static BrandMessage decode(PacketBuffer buffer) {
-		return new BrandMessage(buffer.readBoolean(), buffer.readUniqueId());
+	public static BurningMessage decode(PacketBuffer buffer) {
+		return new BurningMessage(buffer.readInt());
 	}
 
 	public void handle(Supplier<NetworkEvent.Context> supplier) {
 		final NetworkEvent.Context context = supplier.get();
 		context.setPacketHandled(true);
-		context.enqueueWork(() -> DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> Handler.handle(isBrand, id)));
+		context.enqueueWork(() -> DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> Handler.handle(id)));
 	}
 
 	private static class Handler {
-		private static SafeRunnable handle(boolean isBrand, UUID id) {
+		private static SafeRunnable handle(int id) {
 			return new SafeRunnable() {
 				private static final long serialVersionUID = 1L;
 
@@ -46,9 +42,9 @@ public class BrandMessage {
 				public void run() {
 					World world = Minecraft.getInstance().world;
 					if (world != null) {
-						PlayerEntity player = world.getPlayerByUuid(id);
-						if (player != null)
-							Brand.get(player).ifPresent(b -> b.setBrand(isBrand));
+						Entity entity = world.getEntityByID(id);
+						if (entity != null)
+							Ablazed.get(entity).ifPresent(a -> a.setBurning());
 					}
 				}
 			};

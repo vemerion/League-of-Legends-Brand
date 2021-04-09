@@ -1,7 +1,6 @@
 package mod.vemerion.leagueoflegendsbrand;
 
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
-import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PyroclasmEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.SearEntity;
@@ -20,9 +19,6 @@ public class LeagueOfLegendsBrand {
 	
 	@ObjectHolder(LeagueOfLegendsBrand.MODID + ":pillar_of_flame_entity")
 	public static EntityType<PillarOfFlameEntity> PILLAR_OF_FLAME_ENTITY = null;
-	
-	@ObjectHolder(LeagueOfLegendsBrand.MODID + ":conflagration_entity")
-	public static EntityType<ConflagrationEntity> CONFLAGRATION_ENTITY = null;
 	
 	@ObjectHolder(LeagueOfLegendsBrand.MODID + ":pyroclasm_entity")
 	public static EntityType<PyroclasmEntity> PYROCLASM_ENTITY = null;

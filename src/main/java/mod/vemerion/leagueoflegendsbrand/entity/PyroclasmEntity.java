@@ -62,10 +62,7 @@ public class PyroclasmEntity extends BrandBallEntity {
 			Entity shooter = func_234616_v_();
 			if (hitEntity instanceof LivingEntity && shooter instanceof PlayerEntity) {
 				hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) shooter), 10);
-				ConflagrationEntity fireEffect = new ConflagrationEntity(LeagueOfLegendsBrand.CONFLAGRATION_ENTITY,
-						world, hitEntity);
-				fireEffect.setPosition(hitEntity.getPosX(), hitEntity.getPosY(), hitEntity.getPosZ());
-				world.addEntity(fireEffect);
+				Ablazed.startBurning(hitEntity);
 
 				Ablazed.get(hitEntity).ifPresent(ablazed -> {
 					if (ablazed.get() > 0) {

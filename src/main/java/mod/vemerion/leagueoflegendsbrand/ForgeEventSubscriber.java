@@ -2,7 +2,6 @@ package mod.vemerion.leagueoflegendsbrand;
 
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -48,8 +47,6 @@ public class ForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void updateAblazed(LivingUpdateEvent event) {
-		LivingEntity entity = event.getEntityLiving();
-		if (!entity.world.isRemote)
-			Ablazed.get(entity).ifPresent(a -> a.tick());
+		Ablazed.get(event.getEntityLiving()).ifPresent(a -> a.tick());
 	}
 }

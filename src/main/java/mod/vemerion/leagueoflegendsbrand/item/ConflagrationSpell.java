@@ -2,7 +2,6 @@ package mod.vemerion.leagueoflegendsbrand.item;
 
 import mod.vemerion.leagueoflegendsbrand.LeagueOfLegendsBrand;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
-import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,10 +23,7 @@ public class ConflagrationSpell extends BrandSpell {
 			if (target != null) {
 				target.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
 				player.getCooldownTracker().setCooldown(this, 160);
-				ConflagrationEntity entity = new ConflagrationEntity(LeagueOfLegendsBrand.CONFLAGRATION_ENTITY, worldIn,
-						target);
-				entity.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
-				worldIn.addEntity(entity);
+				Ablazed.startBurning(target);
 
 				Ablazed.get(target).ifPresent(ablazed -> {
 					if (ablazed.get() > 0) {
@@ -35,10 +31,7 @@ public class ConflagrationSpell extends BrandSpell {
 								(e) -> e instanceof LivingEntity && e != player)) {
 							Ablazed.get(nearby).ifPresent(a -> a.inc());
 							nearby.attackEntityFrom(DamageSource.causePlayerDamage(player), 4);
-							ConflagrationEntity extra = new ConflagrationEntity(
-									LeagueOfLegendsBrand.CONFLAGRATION_ENTITY, worldIn, nearby);
-							extra.setPosition(nearby.getPosX(), nearby.getPosY(), nearby.getPosZ());
-							worldIn.addEntity(extra);
+							Ablazed.startBurning(nearby);
 						}
 					}
 					ablazed.inc();

@@ -4,7 +4,6 @@ import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.capability.CompoundStorage;
 import mod.vemerion.leagueoflegendsbrand.entity.AblazedEntity;
-import mod.vemerion.leagueoflegendsbrand.entity.ConflagrationEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.PyroclasmEntity;
 import mod.vemerion.leagueoflegendsbrand.entity.SearEntity;
@@ -14,6 +13,7 @@ import mod.vemerion.leagueoflegendsbrand.item.PyroclasmSpell;
 import mod.vemerion.leagueoflegendsbrand.item.SearSpell;
 import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftBrandItem;
 import mod.vemerion.leagueoflegendsbrand.network.BrandMessage;
+import mod.vemerion.leagueoflegendsbrand.network.BurningMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -48,9 +48,6 @@ public class ModEventSubscriber {
 		EntityType<PillarOfFlameEntity> pillarOfFlameEntity = EntityType.Builder
 				.<PillarOfFlameEntity>create(PillarOfFlameEntity::new, EntityClassification.MISC).size(1, 1)
 				.build("pillar_of_flame_entity");
-		EntityType<ConflagrationEntity> conflagrationEntity = EntityType.Builder
-				.<ConflagrationEntity>create(ConflagrationEntity::new, EntityClassification.MISC).size(1, 1)
-				.build("conflagration_entity");
 		EntityType<PyroclasmEntity> pyroclasmEntity = EntityType.Builder
 				.<PyroclasmEntity>create(PyroclasmEntity::new, EntityClassification.MISC).size(0.85f, 0.85f)
 				.build("pyroclasm_entity");
@@ -60,7 +57,6 @@ public class ModEventSubscriber {
 
 		event.getRegistry().register(setup(searEntity, "sear_entity"));
 		event.getRegistry().register(setup(pillarOfFlameEntity, "pillar_of_flame_entity"));
-		event.getRegistry().register(setup(conflagrationEntity, "conflagration_entity"));
 		event.getRegistry().register(setup(pyroclasmEntity, "pyroclasm_entity"));
 		event.getRegistry().register(setup(ablazedEntity, "ablazed_entity"));
 	}
@@ -95,9 +91,10 @@ public class ModEventSubscriber {
 		CapabilityManager.INSTANCE.register(Ablazed.class, new CompoundStorage<>(), () -> {
 			throw new UnsupportedOperationException("You are not allowed to use default instance for this capability");
 		});
-		Network.INSTANCE.registerMessage(Network.index(), BrandMessage.class, BrandMessage::encode, BrandMessage::decode,
-				BrandMessage::handle);
-
+		Network.INSTANCE.registerMessage(Network.index(), BrandMessage.class, BrandMessage::encode,
+				BrandMessage::decode, BrandMessage::handle);
+		Network.INSTANCE.registerMessage(Network.index(), BurningMessage.class, BurningMessage::encode,
+				BurningMessage::decode, BurningMessage::handle);
 	}
 
 	public static <T extends IForgeRegistryEntry<T>> T setup(final T entry, final String name) {

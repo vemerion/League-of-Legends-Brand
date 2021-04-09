@@ -2,13 +2,16 @@ package mod.vemerion.leagueoflegendsbrand;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.Brand;
 import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
+import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
 import mod.vemerion.leagueoflegendsbrand.renderer.BrandRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -19,12 +22,26 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = LeagueOfLegendsBrand.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEventSubscriber {
+
+	@SubscribeEvent
+	public static void renderBurning(RenderLivingEvent<?, ?> event) {
+		LivingEntity entity = event.getEntity();
+		Ablazed.get(entity).ifPresent(a -> {
+			if (!a.isBurning())
+				return;
+			float width = entity.getSize(Pose.STANDING).width * 0.7f;
+			CubeModel.getCube().renderBurning(200, width, a.getBurning() + event.getPartialRenderTick(),
+					event.getMatrixStack(), event.getBuffers(), event.getLight());
+		});
+
+	}
 
 	@SubscribeEvent
 	public static void renderBrand(RenderPlayerEvent.Pre event) {
