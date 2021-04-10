@@ -2,7 +2,7 @@ package mod.vemerion.leagueoflegendsbrand.eventsubscriber;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
-import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -18,32 +18,32 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class ForgeEventSubscriber {
 
 	@SubscribeEvent
-	public static void synchBrand(PlayerLoggedInEvent event) {
+	public static void synchChampion(PlayerLoggedInEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand.sync(player, (ServerPlayerEntity) player);
+		Champions.sync(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
-	public static void synchBrand(PlayerChangedDimensionEvent event) {
+	public static void synchChampion(PlayerChangedDimensionEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand.sync(player, (ServerPlayerEntity) player);
+		Champions.sync(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
-	public static void synchBrand(PlayerEvent.PlayerRespawnEvent event) {
+	public static void synchChampion(PlayerEvent.PlayerRespawnEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Brand.sync(player, (ServerPlayerEntity) player);
+		Champions.sync(player, (ServerPlayerEntity) player);
 	}
 
 	@SubscribeEvent
-	public static void synchBrand(PlayerEvent.StartTracking event) {
-		Brand.sync(event.getTarget(), (ServerPlayerEntity) event.getPlayer());
+	public static void synchChampion(PlayerEvent.StartTracking event) {
+		Champions.sync(event.getTarget(), (ServerPlayerEntity) event.getPlayer());
 	}
 
 	@SubscribeEvent
-	public static void brandTick(PlayerTickEvent event) {
+	public static void championsTick(PlayerTickEvent event) {
 		if (event.phase == Phase.START)
-			Brand.get(event.player).ifPresent(b -> b.tick());
+			Champions.get(event.player).ifPresent(c -> c.tick());
 	}
 
 	@SubscribeEvent

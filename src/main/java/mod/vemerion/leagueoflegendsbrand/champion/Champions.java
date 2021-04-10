@@ -1,12 +1,11 @@
-package mod.vemerion.leagueoflegendsbrand.capability;
+package mod.vemerion.leagueoflegendsbrand.champion;
 
+import java.util.EnumMap;
 import java.util.Random;
+import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
-import mod.vemerion.leagueoflegendsbrand.entity.PillarOfFlameEntity;
-import mod.vemerion.leagueoflegendsbrand.init.ModItems;
-import mod.vemerion.leagueoflegendsbrand.network.BrandMessage;
+import mod.vemerion.leagueoflegendsbrand.item.SpellItem;
+import mod.vemerion.leagueoflegendsbrand.network.ChampionMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,31 +26,69 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-public class Brand implements INBTSerializable<CompoundNBT> {
+public class Champions implements INBTSerializable<CompoundNBT> {
 
-	@CapabilityInject(Brand.class)
-	public static final Capability<Brand> CAPABILITY = null;
+	@CapabilityInject(Champions.class)
+	public static final Capability<Champions> CAPABILITY = null;
 
-	private PillarOfFlameEntity pillarOfFlame;
-	private boolean isBrand;
+	private Champion champion;
 	private PlayerEntity player;
+	private EnumMap<Champion, ChampionImplementation> champImpls;
 
-	public Brand(PlayerEntity player) {
+	public Champions(PlayerEntity player) {
 		this.player = player;
+		this.setChampion(Champion.STEVE);
+
+		initChamps(player);
+	}
+
+	private void initChamps(PlayerEntity player) {
+		champImpls = new EnumMap<>(Champion.class);
+		champImpls.put(Champion.STEVE, new SteveChampion(player));
+		champImpls.put(Champion.BRAND, new BrandChampion(player));
+	}
+
+	public boolean isSteve() {
+		return isChampion(Champion.STEVE);
+	}
+
+	public boolean isChampion() {
+		return !isSteve();
+	}
+
+	public boolean isChampion(Champion champ) {
+		return champion == champ;
+	}
+
+	public void setChampion(Champion champ) {
+		champion = champ;
+	}
+
+	private Champion getChampion() {
+		return champion;
+	}
+
+	public Spell getSpell(SpellKey key) {
+		return getChampImpl().getSpell(key);
+	}
+
+	private ChampionImplementation getChampImpl() {
+		return champImpls.get(champion);
 	}
 
 	public void tick() {
 		if (!player.world.isRemote)
-			if (!isBrand)
-				ItemStackHelper.func_233534_a_(player.inventory, s -> getSpells().contains(s.getItem()), -1, false);
-			else
-				addSpellsToInv();
+			ItemStackHelper.func_233534_a_(player.inventory, s -> !isSpell(s.getItem()) && s.getItem() instanceof SpellItem, -1, false);
+		if (isChampion())
+			addSpellsToInv();
 		destroyMap();
+
+		getChampImpl().tick();
 	}
 
 	private void destroyMap() {
 		World world = player.world;
-		if (!isBrand())
+		if (isSteve())
 			return;
 
 		for (Hand hand : Hand.values()) {
@@ -73,66 +110,48 @@ public class Brand implements INBTSerializable<CompoundNBT> {
 	}
 
 	private void addSpellsToInv() {
-		for (Item spell : getSpells()) {
+		for (Item spell : getSpellItems()) {
 			ItemStack stack = spell.getDefaultInstance();
 			if (!player.inventory.hasItemStack(stack))
 				player.addItemStackToInventory(stack);
 		}
 	}
-	
+
 	public boolean isSpell(Item item) {
-		return getSpells().contains(item);
+		return getSpellItems().contains(item);
 	}
 
-	private ImmutableSet<Item> getSpells() {
-		return ImmutableSet.of(ModItems.CONFLAGRATION,
-				ModItems.PILLAR_OF_FLAME, ModItems.PYROCLASM,
-				ModItems.SEAR);
-	}
-
-	public PillarOfFlameEntity getPillarOfFlame() {
-		return pillarOfFlame;
-	}
-
-	public void setPillarOfFlame(PillarOfFlameEntity pillarOfFlame) {
-		this.pillarOfFlame = pillarOfFlame;
-	}
-
-	public boolean isBrand() {
-		return isBrand;
-	}
-
-	public void setBrand(boolean value) {
-		isBrand = value;
+	private Set<Item> getSpellItems() {
+		return getChampImpl().getSpellItems();
 	}
 
 	@Override
 	public CompoundNBT serializeNBT() {
 		CompoundNBT compound = new CompoundNBT();
-		compound.putBoolean("isBrand", isBrand());
+		compound.putInt("champion", getChampion().getId());
 		return compound;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundNBT nbt) {
-		setBrand(nbt.getBoolean("isBrand"));
+		setChampion(Champion.get(nbt.getInt("champion")));
 	}
 
-	public static LazyOptional<Brand> get(Entity player) {
+	public static LazyOptional<Champions> get(Entity player) {
 		return player.getCapability(CAPABILITY);
 	}
 
 	public static void sync(Entity entity) {
 		get(entity).ifPresent(b -> {
 			Network.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-					new BrandMessage(b.isBrand(), entity.getUniqueID()));
+					new ChampionMessage(b.getChampion().getId(), entity.getUniqueID()));
 		});
 	}
 
 	public static void sync(Entity entity, ServerPlayerEntity reciever) {
 		get(entity).ifPresent(b -> {
 			Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> reciever),
-					new BrandMessage(b.isBrand(), entity.getUniqueID()));
+					new ChampionMessage(b.getChampion().getId(), entity.getUniqueID()));
 		});
 	}
 }

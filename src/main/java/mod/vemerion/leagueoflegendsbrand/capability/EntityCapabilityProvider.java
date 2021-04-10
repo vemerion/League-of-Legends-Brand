@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
+import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +23,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class EntityCapabilityProvider<E extends Entity, C> implements ICapabilitySerializable<INBT> {
 
 	public static final ResourceLocation ABLAZED_LOC = new ResourceLocation(Main.MODID, "ablazed");
-	public static final ResourceLocation BRAND_LOC = new ResourceLocation(Main.MODID, "brand");
+	public static final ResourceLocation CHAMPION_LOC = new ResourceLocation(Main.MODID, "champion");
 
 	@SubscribeEvent
 	public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
@@ -30,8 +31,8 @@ public class EntityCapabilityProvider<E extends Entity, C> implements ICapabilit
 			event.addCapability(ABLAZED_LOC, new EntityCapabilityProvider<LivingEntity, Ablazed>(
 					Lazy.of(() -> Ablazed.CAPABILITY), Ablazed::new, (LivingEntity) event.getObject()));
 		if (event.getObject() instanceof PlayerEntity)
-			event.addCapability(BRAND_LOC, new EntityCapabilityProvider<PlayerEntity, Brand>(
-					Lazy.of(() -> Brand.CAPABILITY), Brand::new, (PlayerEntity) event.getObject()));
+			event.addCapability(CHAMPION_LOC, new EntityCapabilityProvider<PlayerEntity, Champions>(
+					Lazy.of(() -> Champions.CAPABILITY), Champions::new, (PlayerEntity) event.getObject()));
 	}
 
 	private Supplier<Capability<C>> capability;

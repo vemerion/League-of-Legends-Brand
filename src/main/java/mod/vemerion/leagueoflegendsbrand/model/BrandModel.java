@@ -1,6 +1,6 @@
 package mod.vemerion.leagueoflegendsbrand.model;
 
-import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -17,8 +17,8 @@ public class BrandModel extends PlayerModel<AbstractClientPlayerEntity> {
 	public void setRotationAngles(AbstractClientPlayerEntity entityIn, float limbSwing, float limbSwingAmount,
 			float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		Brand.get(entityIn).ifPresent(b -> {
-			if (b.isSpell(entityIn.getActiveItemStack().getItem()))
+		Champions.get(entityIn).ifPresent(c -> {
+			if (c.isSpell(entityIn.getActiveItemStack().getItem()))
 				for (HandSide side : HandSide.values()) {
 					ModelRenderer arm = getArmForSide(side);
 					arm.rotateAngleX = -ClientHelper.toRad(90);

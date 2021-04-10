@@ -1,12 +1,11 @@
 package mod.vemerion.leagueoflegendsbrand.init;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
-import mod.vemerion.leagueoflegendsbrand.item.ConflagrationSpell;
-import mod.vemerion.leagueoflegendsbrand.item.PillarOfFlameSpell;
-import mod.vemerion.leagueoflegendsbrand.item.ProjectileSpell;
+import mod.vemerion.leagueoflegendsbrand.champion.Champion;
+import mod.vemerion.leagueoflegendsbrand.champion.SpellKey;
+import mod.vemerion.leagueoflegendsbrand.item.SpellItem;
 import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftBrandItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -26,12 +25,10 @@ public class ModItems {
 	@SubscribeEvent
 	public static void registerItem(RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> reg = event.getRegistry();
-		reg.register(Init.setup(new ProjectileSpell(Lazy.of(() -> ModEntities.SEAR), 0.5f, 140,
-				Lazy.of(() -> ModSounds.FIREBALL)), "sear"));
-		reg.register(Init.setup(new PillarOfFlameSpell(), "pillar_of_flame"));
-		reg.register(Init.setup(new ConflagrationSpell(), "conflagration"));
-		reg.register(Init.setup(new ProjectileSpell(Lazy.of(() -> ModEntities.PYROCLASM), 0.7f, 1000,
-				Lazy.of(() -> ModSounds.FIREBALL_WOOSH)), "pyroclasm"));
+		reg.register(Init.setup(new SpellItem(SpellKey.Q, 8, Champion.BRAND), "sear"));
+		reg.register(Init.setup(new SpellItem(SpellKey.W, 8, Champion.BRAND), "pillar_of_flame"));
+		reg.register(Init.setup(new SpellItem(SpellKey.E, 8, Champion.BRAND), "conflagration"));
+		reg.register(Init.setup(new SpellItem(SpellKey.R, 8, Champion.BRAND), "pyroclasm"));
 		reg.register(Init.setup(new SummonersRiftBrandItem(), "summoners_rift_brand"));
 
 	}

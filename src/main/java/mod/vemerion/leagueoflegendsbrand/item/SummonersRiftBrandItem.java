@@ -1,6 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
-import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.champion.Champion;
+import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,8 +32,7 @@ public class SummonersRiftBrandItem extends Item {
 	@Override
 	public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
 		if (count % 5 == 0)
-			livingEntityIn.playSound(ModSounds.BURNING, 1.5f,
-					0.9f + livingEntityIn.getRNG().nextFloat() * 0.2f);
+			livingEntityIn.playSound(ModSounds.BURNING, 1.5f, 0.9f + livingEntityIn.getRNG().nextFloat() * 0.2f);
 	}
 
 	@Override
@@ -44,14 +44,16 @@ public class SummonersRiftBrandItem extends Item {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		entityLiving.playSound(ModSounds.EXPLOSION, 0.6f,
-				0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
+		entityLiving.playSound(ModSounds.EXPLOSION, 0.6f, 0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
-			Brand.get(player).ifPresent(brand -> {
-				brand.setBrand(!brand.isBrand());
+			Champions.get(player).ifPresent(c -> {
+				if (c.isChampion(Champion.BRAND))
+					c.setChampion(Champion.STEVE);
+				else
+					c.setChampion(Champion.BRAND);
 			});
-			Brand.sync(player);
+			Champions.sync(player);
 		}
 		return stack;
 	}

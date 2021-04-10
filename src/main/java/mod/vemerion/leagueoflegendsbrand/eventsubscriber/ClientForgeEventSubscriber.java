@@ -4,9 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
-import mod.vemerion.leagueoflegendsbrand.capability.Brand;
+import mod.vemerion.leagueoflegendsbrand.champion.Champion;
+import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.init.ModItems;
-import mod.vemerion.leagueoflegendsbrand.item.BrandSpell;
+import mod.vemerion.leagueoflegendsbrand.item.SpellItem;
 import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
 import mod.vemerion.leagueoflegendsbrand.renderer.BrandRenderer;
 import net.minecraft.client.Minecraft;
@@ -47,8 +48,8 @@ public class ClientForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void renderBrand(RenderPlayerEvent.Pre event) {
-		Brand.get(event.getPlayer()).ifPresent(b -> {
-			if (!(event.getRenderer() instanceof BrandRenderer) && b.isBrand()) {
+		Champions.get(event.getPlayer()).ifPresent(b -> {
+			if (!(event.getRenderer() instanceof BrandRenderer) && b.isChampion(Champion.BRAND)) {
 				event.setCanceled(true);
 				renderBrandTexture(event);
 				renderBurningHead(event);
@@ -111,13 +112,13 @@ public class ClientForgeEventSubscriber {
 		ItemStack stack = event.getItemStack();
 		Item item = stack.getItem();
 		float partialTicks = event.getPartialTicks();
-		Brand.get(player).ifPresent(b -> {
-			if (b.isBrand()) {
-				if (player.getActiveItemStack().getItem() instanceof BrandSpell || stack.isEmpty()
-						|| item instanceof BrandSpell)
+		Champions.get(player).ifPresent(c -> {
+			if (c.isChampion(Champion.BRAND)) {
+				if (player.getActiveItemStack().getItem() instanceof SpellItem || stack.isEmpty()
+						|| item instanceof SpellItem)
 					event.setCanceled(true);
 
-				if (item instanceof BrandSpell) {
+				if (item instanceof SpellItem) {
 					if (player.getActiveItemStack() == stack) {
 						BrandRenderer renderer = new BrandRenderer(Minecraft.getInstance().getRenderManager());
 						float maxProgress = (float) stack.getUseDuration();
@@ -150,7 +151,7 @@ public class ClientForgeEventSubscriber {
 	private static void renderBrandHand(RenderHandEvent event) {
 		Minecraft mc = Minecraft.getInstance();
 		AbstractClientPlayerEntity player = mc.player;
-		if (player.getActiveItemStack().getItem() instanceof BrandSpell)
+		if (player.getActiveItemStack().getItem() instanceof SpellItem)
 			return;
 		BrandRenderer renderer = new BrandRenderer(mc.getRenderManager());
 		mc.getTextureManager().bindTexture(BrandRenderer.TEXTURES);
