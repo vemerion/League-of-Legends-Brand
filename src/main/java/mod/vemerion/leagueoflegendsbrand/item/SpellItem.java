@@ -70,4 +70,8 @@ public class SpellItem extends Item {
 	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
 		return new ItemEntity(world, location.getPosX(), location.getPosY(), location.getPosZ(), ItemStack.EMPTY);
 	}
+
+	public SpellKey getKey() {
+		return key;
+	}
 }

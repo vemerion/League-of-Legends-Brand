@@ -4,19 +4,17 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
-import mod.vemerion.leagueoflegendsbrand.champion.Champion;
 import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.init.ModItems;
-import mod.vemerion.leagueoflegendsbrand.item.SpellItem;
 import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
-import mod.vemerion.leagueoflegendsbrand.renderer.BrandRenderer;
+import mod.vemerion.leagueoflegendsbrand.renderer.champion.ChampionRenderers;
+import mod.vemerion.leagueoflegendsbrand.renderer.champion.CustomRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -47,38 +45,31 @@ public class ClientForgeEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void renderBrand(RenderPlayerEvent.Pre event) {
-		Champions.get(event.getPlayer()).ifPresent(b -> {
-			if (!(event.getRenderer() instanceof BrandRenderer) && b.isChampion(Champion.BRAND)) {
-				event.setCanceled(true);
-				renderBrandTexture(event);
-				renderBurningHead(event);
-			}
-		});
-	}
+	public static void renderChampion(RenderPlayerEvent.Pre event) {
+		if (!(event.getRenderer() instanceof CustomRenderer)) {
+			Champions.get(event.getPlayer()).ifPresent(c -> {
+				if (c.isChampion())
+					event.setCanceled(true);
+			});
+			AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
+			float partialTicks = event.getPartialRenderTick();
+			float yaw = MathHelper.lerp(partialTicks, player.prevRotationYaw, player.rotationYaw);
 
-	private static void renderBrandTexture(RenderPlayerEvent.Pre event) {
-		BrandRenderer renderer = new BrandRenderer(event.getRenderer().getRenderManager());
-		float partialTicks = event.getPartialRenderTick();
-		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
-		float yaw = MathHelper.lerp(partialTicks, player.prevRotationYaw, player.rotationYaw);
-		renderer.render(player, yaw, partialTicks, event.getMatrixStack(), event.getBuffers(), event.getLight());
-	}
-
-	private static void renderBurningHead(RenderPlayerEvent.Pre event) {
-		PlayerEntity player = event.getPlayer();
-		Pose pose = player.getPose();
-		float eyeHeight = player.getStandingEyeHeight(pose, player.getSize(pose));
-		if (pose == Pose.SWIMMING || pose == Pose.FALL_FLYING) {
-			return;
+			ChampionRenderers.getInstance().render(player, yaw, partialTicks, event.getMatrixStack(),
+					event.getBuffers(), event.getLight());
 		}
-		MatrixStack matrix = event.getMatrixStack();
-		matrix.push();
-		matrix.rotate(new Quaternion(-90, 0, 0, true));
-		matrix.translate(0, -1, 0.1 + eyeHeight);
-		BrandRenderer.renderBurning(35, player, event.getMatrixStack(), event.getBuffers(),
-				event.getPartialRenderTick(), event.getLight());
-		matrix.pop();
+	}
+
+	@SubscribeEvent
+	public static void renderChampionHand(RenderHandEvent event) {
+		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
+		ItemStack stack = event.getItemStack();
+		float partialTicks = event.getPartialTicks();
+		HandSide side = event.getHand() == Hand.MAIN_HAND ? player.getPrimaryHand()
+				: player.getPrimaryHand().opposite();
+		event.setCanceled(
+				ChampionRenderers.getInstance().renderHand(side, player, stack, partialTicks, event.getMatrixStack(),
+						event.getBuffers(), event.getLight(), event.getSwingProgress(), event.getEquipProgress()));
 	}
 
 	@SubscribeEvent
@@ -93,8 +84,6 @@ public class ClientForgeEventSubscriber {
 			matrix.push();
 			matrix.translate(0, 0, -0.4);
 			matrix.rotate(new Quaternion(-90, 0, 0, true));
-			BrandRenderer.renderBurning(40, player, event.getMatrixStack(), event.getBuffers(), event.getPartialTicks(),
-					event.getLight());
 			matrix.pop();
 			matrix.push();
 			matrix.translate(MathHelper.cos((progress / 10) * (float) Math.PI * 2) * 0.1,
@@ -104,70 +93,5 @@ public class ClientForgeEventSubscriber {
 					OverlayTexture.NO_OVERLAY, event.getMatrixStack(), event.getBuffers());
 			matrix.pop();
 		}
-	}
-
-	@SubscribeEvent
-	public static void brandHand(RenderHandEvent event) {
-		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
-		ItemStack stack = event.getItemStack();
-		Item item = stack.getItem();
-		float partialTicks = event.getPartialTicks();
-		Champions.get(player).ifPresent(c -> {
-			if (c.isChampion(Champion.BRAND)) {
-				if (player.getActiveItemStack().getItem() instanceof SpellItem || stack.isEmpty()
-						|| item instanceof SpellItem)
-					event.setCanceled(true);
-
-				if (item instanceof SpellItem) {
-					if (player.getActiveItemStack() == stack) {
-						BrandRenderer renderer = new BrandRenderer(Minecraft.getInstance().getRenderManager());
-						float maxProgress = (float) stack.getUseDuration();
-						float progress = (maxProgress
-								- ((float) player.getItemInUseCount() - (float) event.getPartialTicks() + 1.0f))
-								/ maxProgress;
-						if (item.equals(ModItems.SEAR)) {
-							renderer.renderSear(progress, event.getMatrixStack(), event.getBuffers(), event.getLight(),
-									player, partialTicks);
-						} else if (item.equals(ModItems.PILLAR_OF_FLAME)) {
-							renderer.renderPillarOfFlame(progress, event.getMatrixStack(), event.getBuffers(),
-									event.getLight(), player, partialTicks);
-						} else if (item.equals(ModItems.CONFLAGRATION)) {
-							renderer.renderConflagration(progress, event.getMatrixStack(), event.getBuffers(),
-									event.getLight(), player, partialTicks);
-						} else if (item.equals(ModItems.PYROCLASM)) {
-							renderer.renderPyroclasm(progress, event.getMatrixStack(), event.getBuffers(),
-									event.getLight(), player, partialTicks);
-						}
-					} else {
-						renderBrandHand(event);
-					}
-				} else if (stack.isEmpty() && event.getHand() == Hand.MAIN_HAND) {
-					renderBrandHand(event);
-				}
-			}
-		});
-	}
-
-	private static void renderBrandHand(RenderHandEvent event) {
-		Minecraft mc = Minecraft.getInstance();
-		AbstractClientPlayerEntity player = mc.player;
-		if (player.getActiveItemStack().getItem() instanceof SpellItem)
-			return;
-		BrandRenderer renderer = new BrandRenderer(mc.getRenderManager());
-		mc.getTextureManager().bindTexture(BrandRenderer.TEXTURES);
-		float swingProgress = event.getSwingProgress();
-		float equipProgress = swingProgress > 0.01 ? 0 : event.getEquipProgress();
-		HandSide side = event.getHand() == Hand.MAIN_HAND ? player.getPrimaryHand()
-				: player.getPrimaryHand().opposite();
-		float offset = side == HandSide.RIGHT ? 1 : -1;
-		MatrixStack matrix = event.getMatrixStack();
-		matrix.push();
-
-		matrix.translate(0, 0, -1);
-		matrix.rotate(
-				new Quaternion(-45 - swingProgress * 100, offset * (20 + swingProgress * 100), -20 * offset, true));
-		matrix.translate(offset * 1.2, -0.7 - equipProgress + swingProgress * 2.5, -swingProgress * 2);
-		renderer.renderArm(side, matrix, event.getBuffers(), event.getLight(), player, event.getPartialTicks());
-		matrix.pop();
 	}
 }

@@ -15,13 +15,14 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 	@Override
 	protected void registerModels() {
+		// TODO: Hide spell items in third person
 		simpleItem(ModItems.CONFLAGRATION);
 		simpleItem(ModItems.PILLAR_OF_FLAME);
 		simpleItem(ModItems.PYROCLASM);
 		simpleItem(ModItems.SEAR);
 		simpleItem(ModItems.SUMMONERS_RIFT_BRAND);
 	}
-	
+
 	private void simpleItem(Item item) {
 		String name = item.getRegistryName().getPath();
 		singleTexture(name, mcLoc(ITEM_FOLDER + "/generated"), "layer0", modLoc(ITEM_FOLDER + "/" + name));

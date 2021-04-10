@@ -64,7 +64,7 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 		champion = champ;
 	}
 
-	private Champion getChampion() {
+	public Champion getChampion() {
 		return champion;
 	}
 

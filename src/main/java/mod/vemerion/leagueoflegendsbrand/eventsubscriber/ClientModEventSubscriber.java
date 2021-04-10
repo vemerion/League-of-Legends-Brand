@@ -5,6 +5,7 @@ import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
 import mod.vemerion.leagueoflegendsbrand.renderer.AblazedRenderer;
 import mod.vemerion.leagueoflegendsbrand.renderer.BrandBallRenderer;
 import mod.vemerion.leagueoflegendsbrand.renderer.PillarOfFlameRenderer;
+import mod.vemerion.leagueoflegendsbrand.renderer.champion.ChampionRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -16,6 +17,8 @@ public class ClientModEventSubscriber {
 
 	@SubscribeEvent
 	public static void onRegisterRenderer(FMLClientSetupEvent event) {
+		ChampionRenderers.init(event.getMinecraftSupplier());
+
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.SEAR,
 				(renderManager) -> new BrandBallRenderer(renderManager));
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.PILLAR_OF_FLAME,
