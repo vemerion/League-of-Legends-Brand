@@ -19,7 +19,7 @@ import net.minecraftforge.common.loot.LootModifier;
 
 public class SummonersRiftBrandLootModifier extends LootModifier {
 
-	protected SummonersRiftBrandLootModifier(ILootCondition[] conditionsIn) {
+	public SummonersRiftBrandLootModifier(ILootCondition[] conditionsIn) {
 		super(conditionsIn);
 	}
 

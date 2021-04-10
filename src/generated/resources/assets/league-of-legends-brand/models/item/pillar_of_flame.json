@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "league-of-legends-brand:item/pillar_of_flame"
+  }
+}

@@ -1,9 +1,9 @@
 {
-  "type": "league-of-legends-brand:summoners_rift_brand",
   "conditions": [
     {
       "condition": "minecraft:random_chance",
       "chance": 0.1
     }
-  ]
+  ],
+  "type": "league-of-legends-brand:summoners_rift_brand"
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "league-of-legends-brand:item/summoners_rift_brand"
   }
-}   
+}
