@@ -40,7 +40,7 @@ public abstract class ChampionRenderer {
 	public abstract void render(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light);
 
-	public abstract boolean renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer,
+	public abstract void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer,
 			int light, AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress);
 
 }

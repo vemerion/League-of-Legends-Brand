@@ -63,21 +63,22 @@ public class ChampionRenderers {
 		if (champions.isSteve())
 			return cancel;
 
-		// TODO: Fix last bit, only render if not holding any item etc
 		ChampionRenderer renderer = getRenderer(champions.getChampion());
 		ItemStack activeStack = player.getActiveItemStack();
 		Item activeItem = activeStack.getItem();
+		boolean shouldRenderHand = stack.isEmpty() || champions.isSpell(stack.getItem());
 		if (champions.isSpell(activeItem)) {
 			float maxProgress = (float) activeStack.getUseDuration();
 			float progress = (maxProgress - (player.getItemInUseCount() - partialTicks + 1f)) / maxProgress;
 			cancel = renderer.renderSpell(((SpellItem) activeItem).getKey(), side, progress, matrix, buffer, light,
 					player, partialTicks);
-			if (!cancel)
-				cancel = renderer.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress,
-						equipProgress);
-		} else {
-			cancel = renderer.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress,
-					equipProgress);
+			if (!cancel && shouldRenderHand) {
+				renderer.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress, equipProgress);
+				cancel = true;
+			}
+		} else if (shouldRenderHand) {
+			renderer.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress, equipProgress);
+			cancel = true;
 		}
 		return cancel;
 	}

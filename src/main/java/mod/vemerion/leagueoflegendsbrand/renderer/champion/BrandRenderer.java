@@ -69,10 +69,9 @@ public class BrandRenderer extends ChampionRenderer {
 	}
 
 	@Override
-	public boolean renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
+	public void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress) {
 		RENDERER.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress, equipProgress);
-		return true;
 	}
 
 	public static class Renderer extends PlayerRenderer implements CustomRenderer {
