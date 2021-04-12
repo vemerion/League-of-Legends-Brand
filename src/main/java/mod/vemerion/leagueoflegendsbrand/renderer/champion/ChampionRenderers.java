@@ -39,6 +39,7 @@ public class ChampionRenderers {
 		if (renderers == null) {
 			renderers = new EnumMap<>(Champion.class);
 			renderers.put(Champion.BRAND, new BrandRenderer(mc.get().getRenderManager()));
+			renderers.put(Champion.MUNDO, new MundoRenderer(mc.get().getRenderManager()));
 		}
 		return renderers.get(champion);
 	}

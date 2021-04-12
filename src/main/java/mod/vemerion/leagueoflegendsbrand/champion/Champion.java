@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Champion {
-	STEVE(0), BRAND(1);
+	STEVE(0), BRAND(1), MUNDO(2);
 
 	private static final Map<Integer, Champion> CHAMPIONS = new HashMap<>();
 

@@ -12,7 +12,7 @@ public abstract class Spell {
 	public void stop(ItemStack stack, World world, PlayerEntity player, int timeLeft) {
 	}
 
-	public void start(World world, PlayerEntity player, Hand hand) {
+	public void start(ItemStack stack, World world, PlayerEntity player, Hand hand) {
 	}
 
 	protected void setCooldown(PlayerEntity player, ItemStack stack, int duration) {

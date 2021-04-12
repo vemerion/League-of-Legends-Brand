@@ -1,5 +1,6 @@
 package mod.vemerion.leagueoflegendsbrand.champion;
 
+import java.util.EnumMap;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -26,9 +27,17 @@ import net.minecraftforge.common.util.Lazy;
 public class BrandChampion extends ChampionImplementation {
 
 	public BrandChampion(PlayerEntity player) {
-		super(player, new ProjectileSpell(Lazy.of(() -> ModEntities.SEAR), 0.5f, 140, Lazy.of(() -> ModSounds.FIREBALL)),
-				new PillarOfFlame(), new Conflagration(), new ProjectileSpell(Lazy.of(() -> ModEntities.PYROCLASM),
-						0.7f, 1000, Lazy.of(() -> ModSounds.FIREBALL_WOOSH)));
+		super(player);
+	}
+
+	@Override
+	protected void addSpells(EnumMap<SpellKey, Spell> spells) {
+		spells.put(SpellKey.Q,
+				new ProjectileSpell(Lazy.of(() -> ModEntities.SEAR), 0.5f, 140, Lazy.of(() -> ModSounds.FIREBALL)));
+		spells.put(SpellKey.W, new PillarOfFlame());
+		spells.put(SpellKey.E, new Conflagration());
+		spells.put(SpellKey.R, new ProjectileSpell(Lazy.of(() -> ModEntities.PYROCLASM), 0.7f, 1000,
+				Lazy.of(() -> ModSounds.FIREBALL_WOOSH)));
 	}
 
 	@Override
@@ -96,7 +105,7 @@ public class BrandChampion extends ChampionImplementation {
 		}
 
 		@Override
-		public void start(World world, PlayerEntity player, Hand hand) {
+		public void start(ItemStack stack, World world, PlayerEntity player, Hand hand) {
 			Vector3d position = aoEPlacement(world, player);
 			if (position != null) {
 				PillarOfFlameEntity entity = new PillarOfFlameEntity(ModEntities.PILLAR_OF_FLAME, world, player);
@@ -122,5 +131,4 @@ public class BrandChampion extends ChampionImplementation {
 			}
 		}
 	}
-
 }

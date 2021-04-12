@@ -1,40 +1,34 @@
 package mod.vemerion.leagueoflegendsbrand.champion;
 
+import java.util.EnumMap;
 import java.util.Set;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 
 public abstract class ChampionImplementation {
+	
+	public static final Spell NULL_SPELL = new Spell() {
+		
+	};
 
 	protected PlayerEntity player;
-	private Spell q, w, e, r;
+	private EnumMap<SpellKey, Spell> spells;
 
-	public ChampionImplementation(PlayerEntity player, Spell q, Spell w, Spell e, Spell r) {
+	public ChampionImplementation(PlayerEntity player) {
 		this.player = player;
-		this.q = q;
-		this.w = w;
-		this.e = e;
-		this.r = r;
+		this.spells = new EnumMap<>(SpellKey.class);
+		this.addSpells(spells);
 	}
+
+	protected abstract void addSpells(EnumMap<SpellKey, Spell> spells);
 
 	public void tick() {
 
 	}
 
 	public Spell getSpell(SpellKey key) {
-		switch (key) {
-		case Q:
-			return q;
-		case W:
-			return w;
-		case E:
-			return e;
-		case R:
-			return r;
-		default:
-			return null;
-		}
+		return spells.getOrDefault(key, NULL_SPELL);
 	}
 
 	public abstract Set<Item> getSpellItems();

@@ -31,7 +31,7 @@ public class SpellItem extends Item {
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
 		if (canCast(playerIn)) {
-			Champions.get(playerIn).ifPresent(c -> c.getSpell(key).start(worldIn, playerIn, handIn));
+			Champions.get(playerIn).ifPresent(c -> c.getSpell(key).start(itemstack, worldIn, playerIn, handIn));
 			playerIn.setActiveHand(handIn);
 			return ActionResult.resultSuccess(itemstack);
 		} else {

@@ -21,7 +21,11 @@ public class ModItemModelProvider extends ItemModelProvider {
 		spellItem(ModItems.PILLAR_OF_FLAME);
 		spellItem(ModItems.PYROCLASM);
 		spellItem(ModItems.SEAR);
+		
+		spellItem(ModItems.BURNING_AGONY);
+		
 		simpleItem(ModItems.SUMMONERS_RIFT_BRAND);
+		simpleItem(ModItems.SUMMONERS_RIFT_MUNDO);
 	}
 
 	private ItemModelBuilder simpleItem(Item item) {

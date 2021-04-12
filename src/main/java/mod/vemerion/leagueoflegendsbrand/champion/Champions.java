@@ -46,6 +46,7 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 		champImpls = new EnumMap<>(Champion.class);
 		champImpls.put(Champion.STEVE, new SteveChampion(player));
 		champImpls.put(Champion.BRAND, new BrandChampion(player));
+		champImpls.put(Champion.MUNDO, new MundoChampion(player));
 	}
 
 	public boolean isSteve() {

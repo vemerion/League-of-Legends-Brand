@@ -18,7 +18,12 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModItems.PILLAR_OF_FLAME, "Pillar of Flame");
 		add(ModItems.PYROCLASM, "Pyroclasm");
 		add(ModItems.SEAR, "Sear");
+		
+		add(ModItems.BURNING_AGONY, "Burning Agony");
+		
 		add(ModItems.SUMMONERS_RIFT_BRAND, "Summoner's Rift: Brand");
+		add(ModItems.SUMMONERS_RIFT_MUNDO, "Summoner's Rift: Mundo");
+		
 		add(ModEntities.ABLAZED, "Ablazed");
 		add(ModEntities.PILLAR_OF_FLAME, "Pillar of Flame");
 		add(ModEntities.PYROCLASM, "Pyroclasm");

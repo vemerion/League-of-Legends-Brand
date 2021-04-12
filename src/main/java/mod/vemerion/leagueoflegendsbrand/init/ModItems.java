@@ -5,6 +5,7 @@ import mod.vemerion.leagueoflegendsbrand.champion.Champion;
 import mod.vemerion.leagueoflegendsbrand.champion.SpellKey;
 import mod.vemerion.leagueoflegendsbrand.item.SpellItem;
 import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftBrandItem;
+import mod.vemerion.leagueoflegendsbrand.item.SummonersRiftMundoItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,7 +21,11 @@ public class ModItems {
 	public static final Item PILLAR_OF_FLAME = null;
 	public static final Item CONFLAGRATION = null;
 	public static final Item PYROCLASM = null;
+	
+	public static final Item BURNING_AGONY = null;
+	
 	public static final Item SUMMONERS_RIFT_BRAND = null;
+	public static final Item SUMMONERS_RIFT_MUNDO = null;
 
 	@SubscribeEvent
 	public static void registerItem(RegistryEvent.Register<Item> event) {
@@ -29,7 +34,11 @@ public class ModItems {
 		reg.register(Init.setup(new SpellItem(SpellKey.W, 8, Champion.BRAND), "pillar_of_flame"));
 		reg.register(Init.setup(new SpellItem(SpellKey.E, 8, Champion.BRAND), "conflagration"));
 		reg.register(Init.setup(new SpellItem(SpellKey.R, 8, Champion.BRAND), "pyroclasm"));
+		
+		reg.register(Init.setup(new SpellItem(SpellKey.W, 8, Champion.MUNDO), "burning_agony"));
+		
 		reg.register(Init.setup(new SummonersRiftBrandItem(), "summoners_rift_brand"));
+		reg.register(Init.setup(new SummonersRiftMundoItem(), "summoners_rift_mundo"));
 
 	}
 }
