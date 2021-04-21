@@ -25,6 +25,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
 
 public class Champions implements INBTSerializable<CompoundNBT> {
 
@@ -39,15 +40,16 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 		this.player = player;
 		this.setChampion(Champion.STEVE);
 
-		initChamps(player);
+		this.initChamps();
 	}
 
-	private void initChamps(PlayerEntity player) {
+	private void initChamps() {
 		champImpls = new EnumMap<>(Champion.class);
 		champImpls.put(Champion.STEVE, new SteveChampion(player));
 		champImpls.put(Champion.BRAND, new BrandChampion(player));
 		champImpls.put(Champion.MUNDO, new MundoChampion(player));
 	}
+
 
 	public boolean isSteve() {
 		return isChampion(Champion.STEVE);
@@ -77,9 +79,14 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 		return champImpls.get(champion);
 	}
 
+	public MundoChampion getMundo() {
+		return (MundoChampion) champImpls.get(Champion.MUNDO);
+	}
+
 	public void tick() {
 		if (!player.world.isRemote)
-			ItemStackHelper.func_233534_a_(player.inventory, s -> !isSpell(s.getItem()) && s.getItem() instanceof SpellItem, -1, false);
+			ItemStackHelper.func_233534_a_(player.inventory,
+					s -> !isSpell(s.getItem()) && s.getItem() instanceof SpellItem, -1, false);
 		if (isChampion())
 			addSpellsToInv();
 		destroyMap();
@@ -138,21 +145,24 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 		setChampion(Champion.get(nbt.getInt("champion")));
 	}
 
+	private void sync(PacketTarget target) {
+		Network.INSTANCE.send(target, new ChampionMessage(getChampion().getId(), player.getUniqueID()));
+		getChampImpl().sync(target);
+	}
+
 	public static LazyOptional<Champions> get(Entity player) {
 		return player.getCapability(CAPABILITY);
 	}
 
 	public static void sync(Entity entity) {
-		get(entity).ifPresent(b -> {
-			Network.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-					new ChampionMessage(b.getChampion().getId(), entity.getUniqueID()));
+		get(entity).ifPresent(c -> {
+			c.sync(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity));
 		});
 	}
 
 	public static void sync(Entity entity, ServerPlayerEntity reciever) {
-		get(entity).ifPresent(b -> {
-			Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> reciever),
-					new ChampionMessage(b.getChampion().getId(), entity.getUniqueID()));
+		get(entity).ifPresent(c -> {
+			c.sync(PacketDistributor.PLAYER.with(() -> reciever));
 		});
 	}
 }

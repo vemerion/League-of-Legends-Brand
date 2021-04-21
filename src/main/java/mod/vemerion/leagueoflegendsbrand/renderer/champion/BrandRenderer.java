@@ -35,7 +35,7 @@ public class BrandRenderer extends ChampionRenderer {
 	}
 
 	@Override
-	public void render(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
+	public void renderThirdPerson(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light) {
 		RENDERER.render(player, yaw, partialTicks, matrix, buffer, light);
 	}

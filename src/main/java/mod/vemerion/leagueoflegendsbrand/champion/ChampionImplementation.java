@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
 
 public abstract class ChampionImplementation {
 	
@@ -32,5 +33,9 @@ public abstract class ChampionImplementation {
 	}
 
 	public abstract Set<Item> getSpellItems();
+
+	public void sync(PacketTarget target) {
+		
+	}
 
 }

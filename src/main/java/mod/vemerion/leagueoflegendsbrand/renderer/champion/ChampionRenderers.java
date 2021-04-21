@@ -1,6 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.renderer.champion;
 
-import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,7 +21,7 @@ public class ChampionRenderers {
 
 	private static ChampionRenderers instance;
 
-	private EnumMap<Champion, ChampionRenderer> renderers;
+	private Map<Champion, ChampionRenderer> renderers;
 	private Supplier<Minecraft> mc;
 
 	public static void init(Supplier<Minecraft> mc) {
@@ -37,7 +38,7 @@ public class ChampionRenderers {
 
 	private ChampionRenderer getRenderer(Champion champion) {
 		if (renderers == null) {
-			renderers = new EnumMap<>(Champion.class);
+			renderers = new HashMap<>();
 			renderers.put(Champion.BRAND, new BrandRenderer(mc.get().getRenderManager()));
 			renderers.put(Champion.MUNDO, new MundoRenderer(mc.get().getRenderManager()));
 		}
@@ -49,7 +50,7 @@ public class ChampionRenderers {
 		Champions.get(player).ifPresent(c -> {
 			if (c.isSteve())
 				return;
-			getRenderer(c.getChampion()).render(player, yaw, partialTicks, matrix, buffer, light);
+			getRenderer(c.getChampion()).renderThirdPerson(player, yaw, partialTicks, matrix, buffer, light);
 		});
 	}
 
@@ -65,6 +66,9 @@ public class ChampionRenderers {
 			return cancel;
 
 		ChampionRenderer renderer = getRenderer(champions.getChampion());
+		
+		renderer.renderFirstPerson(player, partialTicks, matrix, buffer, light);
+		
 		ItemStack activeStack = player.getActiveItemStack();
 		Item activeItem = activeStack.getItem();
 		boolean shouldRenderHand = stack.isEmpty() || champions.isSpell(stack.getItem());

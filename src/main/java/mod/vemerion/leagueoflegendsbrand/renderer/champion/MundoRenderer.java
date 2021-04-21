@@ -3,13 +3,17 @@ package mod.vemerion.leagueoflegendsbrand.renderer.champion;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
+import mod.vemerion.leagueoflegendsbrand.champion.Champions;
+import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import mod.vemerion.leagueoflegendsbrand.model.BrandModel;
+import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class MundoRenderer extends ChampionRenderer {
 
@@ -20,8 +24,37 @@ public class MundoRenderer extends ChampionRenderer {
 	}
 
 	@Override
-	public void render(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
+	public void renderThirdPerson(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light) {
+		Champions.get(player).ifPresent(c -> {
+			if (c.getMundo().isBurningAgonyActivated()) {
+				renderBurningAgony(0.2, player, partialTicks, partialTicks, matrix, buffer, light);
+			}
+		});
+	}
+	
+	@Override
+	protected void renderFirstPerson(AbstractClientPlayerEntity player, float partialTicks, MatrixStack matrix,
+			IRenderTypeBuffer buffer, int light) {
+		Champions.get(player).ifPresent(c -> {
+			if (c.getMundo().isBurningAgonyActivated()) {
+				renderBurningAgony(-1.5, player, partialTicks, partialTicks, matrix, buffer, light);
+			}
+		});
+	}
+
+	private void renderBurningAgony(double height, AbstractClientPlayerEntity player, float yaw, float partialTicks,
+			MatrixStack matrix, IRenderTypeBuffer buffer, int light) {
+		float ageInTicks = player.ticksExisted + partialTicks;
+		Vector3d rotation = Vector3d.fromPitchYaw(0, yaw).rotateYaw(ageInTicks / 10);
+		for (int i = 0; i < 3; i++) {
+			matrix.push();
+			matrix.translate(rotation.x * 1.5, height, rotation.z * 1.5);
+			CubeModel.getCube().renderBall(300, 1.5f, rotation.rotateYaw(ClientHelper.toRad(-90)), ageInTicks, matrix,
+					buffer, light);
+			rotation = rotation.rotateYaw(ClientHelper.toRad(360 / 3));
+			matrix.pop();
+		}
 	}
 
 	@Override

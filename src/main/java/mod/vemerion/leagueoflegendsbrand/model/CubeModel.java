@@ -7,6 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
+import mod.vemerion.leagueoflegendsbrand.helper.Helper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
@@ -20,8 +21,7 @@ import net.minecraft.util.math.vector.Vector3d;
  * Created using Tabula 8.0.0
  */
 public class CubeModel extends Model {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID,
-			"textures/brand_particle.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/brand_particle.png");
 
 	private static final CubeModel CUBE = new CubeModel();
 
@@ -85,8 +85,28 @@ public class CubeModel extends Model {
 			double y = -1 + offset.getY() + MathHelper.lerp((ageInTicks + random.nextFloat() * 3) / interval, 0, 4);
 			double z = offset.getZ();
 
-			render(random, ageInTicks, scale, new Vector3d(x, y, z), matrixStackIn, ivertexbuilder,
-					packedLightIn);
+			render(random, ageInTicks, scale, new Vector3d(x, y, z), matrixStackIn, ivertexbuilder, packedLightIn);
+		}
+	}
+
+	public void renderBall(int count, float width, Vector3d direction, float ageInTicks, MatrixStack matrixStackIn,
+			IRenderTypeBuffer bufferIn, int packedLightIn) {
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(getCube().getRenderType(getTexture()));
+		Random random = new Random(0);
+
+		for (int i = 0; i < count; i++) {
+			int interval = random.nextInt(6) + 6;
+			float offsetYaw = random.nextFloat() * 360;
+			float offsetPitch = random.nextFloat() * 360;
+			float radius = random.nextFloat() * width / 2;
+			Vector3d offset = Vector3d.fromPitchYaw(offsetPitch, offsetYaw).scale(radius);
+
+			float scale = Helper.lerpRepeat(ageInTicks / interval, width, 0);
+			double x = offset.getX() + Helper.lerpRepeat(ageInTicks / interval, 0, (float) direction.getX());
+			double y = -0.5 + offset.getY() + Helper.lerpRepeat(ageInTicks / interval, 0, (float) direction.getY());
+			double z = offset.getZ() + Helper.lerpRepeat(ageInTicks / interval, 0, (float) direction.getZ());
+
+			render(random, ageInTicks, scale, new Vector3d(x, y, z), matrixStackIn, ivertexbuilder, packedLightIn);
 		}
 	}
 
