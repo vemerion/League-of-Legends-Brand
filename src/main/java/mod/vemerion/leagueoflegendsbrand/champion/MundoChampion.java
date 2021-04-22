@@ -1,19 +1,25 @@
 package mod.vemerion.leagueoflegendsbrand.champion;
 
 import java.util.EnumMap;
+import java.util.Random;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
 import mod.vemerion.leagueoflegendsbrand.init.ModItems;
+import mod.vemerion.leagueoflegendsbrand.init.ModParticles;
 import mod.vemerion.leagueoflegendsbrand.network.BurningAgonyMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
 
@@ -43,15 +49,41 @@ public class MundoChampion extends ChampionImplementation {
 
 	@Override
 	public void tick() {
+		World world = player.world;
 		if (burningAgonyActivated)
 			if (agonyDamageTimer++ > AGONY_DAMAGE_INTERVAL) {
 				agonyDamageTimer = 0;
-				for (LivingEntity e : player.world.getEntitiesWithinAABB(LivingEntity.class,
-						player.getBoundingBox().grow(2), e -> e != player)) {
+				for (LivingEntity e : world.getEntitiesWithinAABB(LivingEntity.class, player.getBoundingBox().grow(2),
+						e -> e != player)) {
 					e.attackEntityFrom(DamageSource.causePlayerDamage(player), 2);
 				}
 				player.attackEntityFrom(DamageSource.MAGIC, 1);
 			}
+
+		if (world.isRemote && player.isPotionActive(ModEffects.MASOCHISM) && player.ticksExisted % 3 == 0) {
+			addMasochismParticles();
+		}
+	}
+
+	private void addMasochismParticles() {
+		Pose pose = player.getPose();
+		if (pose != Pose.CROUCHING && pose != Pose.STANDING)
+			return;
+		
+		World world = player.world;
+		Random rand = player.getRNG();
+		Vector3d position = player.getPositionVec().add(0, 0.65, 0);
+		Vector3d forward = Vector3d.fromPitchYaw(0, player.rotationYaw);
+		for (int i = 0; i < 2; i++) {
+			Vector3d pos = position.add(forward.scale(0.4))
+					.add(forward.rotateYaw(rand.nextBoolean() ? -90 : 90).scale(0.5))
+					.add(offset(rand), offset(rand), offset(rand));
+			world.addParticle(ModParticles.BLEED, pos.x, pos.y, pos.z, 0, 0, 0);
+		}
+	}
+
+	private double offset(Random rand) {
+		return (rand.nextDouble() - 0.5) * 0.3;
 	}
 
 	@Override
@@ -88,13 +120,28 @@ public class MundoChampion extends ChampionImplementation {
 
 		}
 	}
-	
+
 	private static class InfectedCleaver extends Spell {
 	}
-	
+
 	private static class Masochism extends Spell {
+
+		private static final int COOLDOWN = 20 * 5;
+
+		@Override
+		public void start(ItemStack stack, World world, PlayerEntity player, Hand hand) {
+			if (!world.isRemote) {
+				setCooldown(player, stack, COOLDOWN);
+				player.attackEntityFrom(DamageSource.MAGIC, 2);
+				player.addPotionEffect(new EffectInstance(ModEffects.MASOCHISM, COOLDOWN, getAmplifier(player)));
+			}
+		}
+
+		private int getAmplifier(PlayerEntity player) {
+			return (int) ((1 - player.getHealth() / player.getMaxHealth()) * 10 / 2);
+		}
 	}
-	
+
 	private static class Sadism extends Spell {
 	}
 }

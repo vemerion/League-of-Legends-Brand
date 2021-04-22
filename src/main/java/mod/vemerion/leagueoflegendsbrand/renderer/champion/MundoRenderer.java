@@ -26,6 +26,7 @@ public class MundoRenderer extends ChampionRenderer {
 	@Override
 	public void renderThirdPerson(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light) {
+		RENDERER.render(player, yaw, partialTicks, matrix, buffer, light);
 		Champions.get(player).ifPresent(c -> {
 			if (c.getMundo().isBurningAgonyActivated()) {
 				renderBurningAgony(0.2, player, partialTicks, partialTicks, matrix, buffer, light);

@@ -1,6 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.datagen;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
+import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
 import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
 import mod.vemerion.leagueoflegendsbrand.init.ModItems;
 import net.minecraft.data.DataGenerator;
@@ -31,5 +32,7 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEntities.PILLAR_OF_FLAME, "Pillar of Flame");
 		add(ModEntities.PYROCLASM, "Pyroclasm");
 		add(ModEntities.SEAR, "Sear");
+		
+		add(ModEffects.MASOCHISM, "Masochism");
 	}
 }
