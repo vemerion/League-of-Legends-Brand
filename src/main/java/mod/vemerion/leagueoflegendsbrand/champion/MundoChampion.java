@@ -30,12 +30,15 @@ public class MundoChampion extends ChampionImplementation {
 
 	@Override
 	protected void addSpells(EnumMap<SpellKey, Spell> spells) {
+		spells.put(SpellKey.Q, new InfectedCleaver());
 		spells.put(SpellKey.W, new BurningAgony(this));
+		spells.put(SpellKey.E, new Masochism());
+		spells.put(SpellKey.R, new Sadism());
 	}
 
 	@Override
 	public Set<Item> getSpellItems() {
-		return ImmutableSet.of(ModItems.BURNING_AGONY);
+		return ImmutableSet.of(ModItems.INFECTED_CLEAVER, ModItems.BURNING_AGONY, ModItems.MASOCHISM, ModItems.SADISM);
 	}
 
 	@Override
@@ -84,5 +87,14 @@ public class MundoChampion extends ChampionImplementation {
 			mundo.burningAgonyActivated = !mundo.burningAgonyActivated;
 
 		}
+	}
+	
+	private static class InfectedCleaver extends Spell {
+	}
+	
+	private static class Masochism extends Spell {
+	}
+	
+	private static class Sadism extends Spell {
 	}
 }

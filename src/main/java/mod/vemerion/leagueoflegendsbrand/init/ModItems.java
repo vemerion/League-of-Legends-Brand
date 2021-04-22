@@ -22,7 +22,10 @@ public class ModItems {
 	public static final Item CONFLAGRATION = null;
 	public static final Item PYROCLASM = null;
 	
+	public static final Item INFECTED_CLEAVER = null;
 	public static final Item BURNING_AGONY = null;
+	public static final Item MASOCHISM = null;
+	public static final Item SADISM = null;
 	
 	public static final Item SUMMONERS_RIFT_BRAND = null;
 	public static final Item SUMMONERS_RIFT_MUNDO = null;
@@ -35,7 +38,10 @@ public class ModItems {
 		reg.register(Init.setup(new SpellItem(SpellKey.E, 8, Champion.BRAND), "conflagration"));
 		reg.register(Init.setup(new SpellItem(SpellKey.R, 8, Champion.BRAND), "pyroclasm"));
 		
+		reg.register(Init.setup(new SpellItem(SpellKey.Q, 5, Champion.MUNDO), "infected_cleaver"));
 		reg.register(Init.setup(new SpellItem(SpellKey.W, 8, Champion.MUNDO), "burning_agony"));
+		reg.register(Init.setup(new SpellItem(SpellKey.E, 0, Champion.MUNDO), "masochism"));
+		reg.register(Init.setup(new SpellItem(SpellKey.R, 0, Champion.MUNDO), "sadism"));
 		
 		reg.register(Init.setup(new SummonersRiftBrandItem(), "summoners_rift_brand"));
 		reg.register(Init.setup(new SummonersRiftMundoItem(), "summoners_rift_mundo"));

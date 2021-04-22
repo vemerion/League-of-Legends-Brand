@@ -22,7 +22,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 		spellItem(ModItems.PYROCLASM);
 		spellItem(ModItems.SEAR);
 		
+		spellItem(ModItems.INFECTED_CLEAVER);
 		spellItem(ModItems.BURNING_AGONY);
+		spellItem(ModItems.MASOCHISM);
+		spellItem(ModItems.SADISM);
 		
 		simpleItem(ModItems.SUMMONERS_RIFT_BRAND);
 		simpleItem(ModItems.SUMMONERS_RIFT_MUNDO);
