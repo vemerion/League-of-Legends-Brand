@@ -69,7 +69,7 @@ public class MundoChampion extends ChampionImplementation {
 		Pose pose = player.getPose();
 		if (pose != Pose.CROUCHING && pose != Pose.STANDING)
 			return;
-		
+
 		World world = player.world;
 		Random rand = player.getRNG();
 		Vector3d position = player.getPositionVec().add(0, 0.65, 0);
@@ -143,5 +143,17 @@ public class MundoChampion extends ChampionImplementation {
 	}
 
 	private static class Sadism extends Spell {
+
+		private static final int COOLDOWN = 20 * 100;
+		private static final int DURATION = 20 * 12;
+
+		@Override
+		public void start(ItemStack stack, World world, PlayerEntity player, Hand hand) {
+			if (!world.isRemote) {
+				setCooldown(player, stack, 40); // TODO: Change to proper cooldown
+				player.attackEntityFrom(DamageSource.MAGIC, player.getHealth() / 4);
+				player.addPotionEffect(new EffectInstance(ModEffects.SADISM, DURATION, 0));
+			}
+		}
 	}
 }

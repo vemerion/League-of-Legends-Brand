@@ -34,5 +34,6 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEntities.SEAR, "Sear");
 		
 		add(ModEffects.MASOCHISM, "Masochism");
+		add(ModEffects.SADISM, "Sadism");
 	}
 }

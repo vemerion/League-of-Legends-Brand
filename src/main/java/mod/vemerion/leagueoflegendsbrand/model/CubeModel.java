@@ -1,6 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.model;
 
 import java.util.Random;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -14,7 +15,6 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
 /**
@@ -49,10 +49,12 @@ public class CubeModel extends Model {
 	}
 
 	public void render(Random rand, float age, float scale, Vector3d offset, MatrixStack matrixStackIn,
-			IVertexBuilder bufferIn, int packedLightIn) {
-		float red = rand.nextFloat() * 0.2f + 0.8f;
-		float green = rand.nextFloat() * 0.2f + 0.3f;
-		float blue = 0;
+			IVertexBuilder bufferIn, int packedLightIn, Function<Random, Integer> color) {
+		int c = color.apply(rand);
+		float red = Helper.red(c) / 255f;
+		float green = Helper.green(c) / 255f;
+		float blue = Helper.blue(c) / 255f;
+		float alfa = Helper.alfa(c) / 255f;
 
 		matrixStackIn.push();
 
@@ -65,12 +67,25 @@ public class CubeModel extends Model {
 		matrixStackIn.scale(scale, scale, scale);
 		matrixStackIn.translate(0, -1, 0);
 
-		render(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1);
+		render(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, alfa);
 		matrixStackIn.pop();
 	}
 
+	public static int orange(Random rand) {
+		return Helper.color(200 + rand.nextInt(55), 75 + rand.nextInt(55), 0, 255);
+	}
+
+	public static int green(Random rand) {
+		return Helper.color(0, 200 + rand.nextInt(55), 75 + rand.nextInt(55), 255);
+	}
+
+	public void render(Random rand, float age, float scale, Vector3d offset, MatrixStack matrixStackIn,
+			IVertexBuilder bufferIn, int packedLightIn) {
+		render(rand, age, scale, offset, matrixStackIn, bufferIn, packedLightIn, CubeModel::orange);
+	}
+
 	public void renderBurning(int count, float width, float ageInTicks, MatrixStack matrixStackIn,
-			IRenderTypeBuffer bufferIn, int packedLightIn) {
+			IRenderTypeBuffer bufferIn, int packedLightIn, Function<Random, Integer> color) {
 		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(getRenderType(getTexture()));
 		Random random = new Random(0);
 
@@ -80,13 +95,20 @@ public class CubeModel extends Model {
 			float radius = random.nextFloat() * width;
 			Vector3d offset = Vector3d.fromPitchYaw(0, direction).scale(radius);
 
-			float scale = (float) MathHelper.clampedLerp(2, 0, (ageInTicks + random.nextFloat() * 3) / interval);
+			float progress = (ageInTicks + random.nextFloat() * 3) / interval;
+			float scale = (float) Helper.lerpRepeat(progress, 2, 0);
 			double x = offset.getX();
-			double y = -1 + offset.getY() + MathHelper.lerp((ageInTicks + random.nextFloat() * 3) / interval, 0, 4);
+			double y = -1 + offset.getY() + Helper.lerpRepeat(progress, 0, 4);
 			double z = offset.getZ();
 
-			render(random, ageInTicks, scale, new Vector3d(x, y, z), matrixStackIn, ivertexbuilder, packedLightIn);
+			render(random, ageInTicks, scale, new Vector3d(x, y, z), matrixStackIn, ivertexbuilder, packedLightIn,
+					color);
 		}
+	}
+
+	public void renderBurning(int count, float width, float ageInTicks, MatrixStack matrixStackIn,
+			IRenderTypeBuffer bufferIn, int packedLightIn) {
+		renderBurning(count, width, ageInTicks, matrixStackIn, bufferIn, packedLightIn, CubeModel::orange);
 	}
 
 	public void renderBall(int count, float width, Vector3d direction, float ageInTicks, MatrixStack matrixStackIn,
