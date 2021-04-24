@@ -26,9 +26,11 @@ import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
 public class MundoChampion extends ChampionImplementation {
 
 	private static final int AGONY_DAMAGE_INTERVAL = 5;
+	private static final int ADRENALINE_INTERVAL = 20 * 10;
 
 	private boolean burningAgonyActivated;
 	private int agonyDamageTimer;
+	private int adrenalineTimer;
 
 	public MundoChampion(PlayerEntity player) {
 		super(player);
@@ -50,15 +52,23 @@ public class MundoChampion extends ChampionImplementation {
 	@Override
 	public void tick() {
 		World world = player.world;
-		if (burningAgonyActivated)
-			if (agonyDamageTimer++ > AGONY_DAMAGE_INTERVAL) {
-				agonyDamageTimer = 0;
-				for (LivingEntity e : world.getEntitiesWithinAABB(LivingEntity.class, player.getBoundingBox().grow(2),
-						e -> e != player)) {
-					e.attackEntityFrom(DamageSource.causePlayerDamage(player), 2);
+
+		if (!world.isRemote) {
+			if (burningAgonyActivated)
+				if (agonyDamageTimer++ > AGONY_DAMAGE_INTERVAL) {
+					agonyDamageTimer = 0;
+					for (LivingEntity e : world.getEntitiesWithinAABB(LivingEntity.class,
+							player.getBoundingBox().grow(2), e -> e != player)) {
+						e.attackEntityFrom(DamageSource.causePlayerDamage(player), 2);
+					}
+					player.attackEntityFrom(DamageSource.MAGIC, 1);
 				}
-				player.attackEntityFrom(DamageSource.MAGIC, 1);
+			
+			if (adrenalineTimer++ > ADRENALINE_INTERVAL) {
+				adrenalineTimer = 0;
+				player.heal(1);
 			}
+		}
 
 		if (world.isRemote && player.isPotionActive(ModEffects.MASOCHISM) && player.ticksExisted % 3 == 0) {
 			addMasochismParticles();
