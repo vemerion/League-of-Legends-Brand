@@ -21,6 +21,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -73,7 +74,7 @@ public class ClientForgeEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void transformBrandAnimation(RenderHandEvent event) {
+	public static void renderSummonersRiftItem(RenderHandEvent event) {
 		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
 		Item item = event.getItemStack().getItem();
 		ItemStack itemStack = event.getItemStack();
@@ -82,13 +83,21 @@ public class ClientForgeEventSubscriber {
 			MatrixStack matrix = event.getMatrixStack();
 			float progress = player.ticksExisted + event.getPartialTicks();
 			matrix.push();
-			matrix.translate(0, 0, -0.4);
-			matrix.rotate(new Quaternion(-90, 0, 0, true));
-			matrix.pop();
-			matrix.push();
 			matrix.translate(MathHelper.cos((progress / 10) * (float) Math.PI * 2) * 0.1,
 					-0.5 + MathHelper.cos((progress / 6) * (float) Math.PI * 2) * 0.1,
 					-1.5 + MathHelper.cos((progress / 15) * (float) Math.PI * 2) * 0.1);
+			Minecraft.getInstance().getItemRenderer().renderItem(itemStack, TransformType.GUI, event.getLight(),
+					OverlayTexture.NO_OVERLAY, event.getMatrixStack(), event.getBuffers());
+			matrix.pop();
+		} else if (item == ModItems.SUMMONERS_RIFT_MUNDO && player.getActiveItemStack().equals(itemStack)) {
+			event.setCanceled(true);
+			MatrixStack matrix = event.getMatrixStack();
+			int maxDuration = itemStack.getUseDuration();
+			float duration = (float) maxDuration - ((float) player.getItemInUseCount() - event.getPartialTicks() + 1.0f);
+			matrix.push();
+			matrix.translate(0, -0.2, -2 + duration * 0.05);
+			matrix.rotate(new Quaternion(-30, 90, 0, true));
+			matrix.rotate(new Quaternion(-duration, -duration, 0, true));
 			Minecraft.getInstance().getItemRenderer().renderItem(itemStack, TransformType.GUI, event.getLight(),
 					OverlayTexture.NO_OVERLAY, event.getMatrixStack(), event.getBuffers());
 			matrix.pop();
