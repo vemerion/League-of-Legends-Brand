@@ -8,8 +8,8 @@ import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import mod.vemerion.leagueoflegendsbrand.helper.Helper;
 import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
-import mod.vemerion.leagueoflegendsbrand.model.BrandModel;
 import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
+import mod.vemerion.leagueoflegendsbrand.model.MundoModel;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
@@ -119,11 +121,14 @@ public class MundoRenderer extends ChampionRenderer {
 	}
 
 	public static class Renderer extends PlayerRenderer implements CustomRenderer {
-		public static final ResourceLocation TEXTURES = new ResourceLocation(Main.MODID, "textures/entity/brand.png");
+		public static final ResourceLocation TEXTURES = new ResourceLocation(Main.MODID, "textures/entity/mundo.png");
+
+		MundoModel model;
 
 		public Renderer(EntityRendererManager renderManager) {
 			super(renderManager);
-			entityModel = new BrandModel(0);
+			model = new MundoModel(0);
+			entityModel = model;
 		}
 
 		@Override
@@ -134,6 +139,13 @@ public class MundoRenderer extends ChampionRenderer {
 		@Override
 		public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks,
 				MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+			Champions.get(entityIn).ifPresent(c -> {
+				ItemStack left = entityIn.getHeldItem(ClientHelper.leftHand(entityIn));
+				model.cleaverHandle.showModel = left.isEmpty() || c.isSpell(left.getItem());
+			});
+			
+			model.needle1.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.CHEST.getIndex()).isEmpty();
+			
 			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 		}
 
