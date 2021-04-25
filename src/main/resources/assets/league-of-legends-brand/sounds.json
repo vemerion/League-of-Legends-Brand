@@ -38,5 +38,13 @@
         "stream": false
       }
     ]
+  },
+  "spray": {
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:spray",
+        "stream": false
+      }
+    ]
   }
 }

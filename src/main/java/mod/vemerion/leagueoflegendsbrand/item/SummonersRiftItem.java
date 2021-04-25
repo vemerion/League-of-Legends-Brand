@@ -1,23 +1,37 @@
 package mod.vemerion.leagueoflegendsbrand.item;
 
+import java.util.function.Supplier;
+
 import mod.vemerion.leagueoflegendsbrand.champion.Champion;
 import mod.vemerion.leagueoflegendsbrand.champion.Champions;
-import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
-// TODO: Create superclass for SummonersRift items
-public class SummonersRiftMundoItem extends Item {
+public class SummonersRiftItem extends Item {
 
-	public SummonersRiftMundoItem() {
+	private Champion champ;
+	private Supplier<SoundEvent> finish;
+	private Supplier<SoundEvent> continuous;
+
+	public SummonersRiftItem(Champion champ, Supplier<SoundEvent> continuous, Supplier<SoundEvent> finish) {
 		super(new Item.Properties().maxStackSize(1).group(ItemGroup.MISC));
+		this.champ = champ;
+		this.continuous = continuous;
+		this.finish = finish;
+	}
+
+	@Override
+	public UseAction getUseAction(ItemStack stack) {
+		return UseAction.CROSSBOW;
 	}
 
 	@Override
@@ -32,8 +46,8 @@ public class SummonersRiftMundoItem extends Item {
 
 	@Override
 	public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (count % 5 == 0)
-			livingEntityIn.playSound(ModSounds.BURNING, 1.5f, 0.9f + livingEntityIn.getRNG().nextFloat() * 0.2f);
+		if (continuous != null && count % 5 == 0)
+			livingEntityIn.playSound(continuous.get(), 1, 0.9f + livingEntityIn.getRNG().nextFloat() * 0.2f);
 	}
 
 	@Override
@@ -45,14 +59,15 @@ public class SummonersRiftMundoItem extends Item {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		entityLiving.playSound(ModSounds.EXPLOSION, 0.6f, 0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
+		if (finish != null)
+			entityLiving.playSound(finish.get(), 1, 0.9f + entityLiving.getRNG().nextFloat() * 0.2f);
 		if (!worldIn.isRemote && entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			Champions.get(player).ifPresent(c -> {
-				if (c.isChampion(Champion.MUNDO))
+				if (c.isChampion(champ))
 					c.setChampion(Champion.STEVE);
 				else
-					c.setChampion(Champion.MUNDO);
+					c.setChampion(champ);
 			});
 			Champions.sync(player);
 		}
