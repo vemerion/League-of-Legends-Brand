@@ -7,8 +7,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 
 import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
+import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
 import mod.vemerion.leagueoflegendsbrand.init.ModItems;
 import mod.vemerion.leagueoflegendsbrand.init.ModParticles;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import mod.vemerion.leagueoflegendsbrand.network.BurningAgonyMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.LivingEntity;
@@ -63,7 +65,7 @@ public class MundoChampion extends ChampionImplementation {
 					}
 					player.attackEntityFrom(DamageSource.MAGIC, 1);
 				}
-			
+
 			if (adrenalineTimer++ > ADRENALINE_INTERVAL) {
 				adrenalineTimer = 0;
 				player.heal(1);
@@ -131,7 +133,20 @@ public class MundoChampion extends ChampionImplementation {
 		}
 	}
 
-	private static class InfectedCleaver extends Spell {
+	private static class InfectedCleaver extends ProjectileSpell {
+
+		private static final int COOLDOWN = 20 * 4;
+
+		public InfectedCleaver() {
+			super(() -> ModEntities.INFECTED_CLEAVER, 1f, COOLDOWN, () -> ModSounds.BURNING); // TODO: Change sound
+		}
+		
+		@Override
+		public void finish(ItemStack stack, World world, PlayerEntity player) {
+			super.finish(stack, world, player);
+			player.attackEntityFrom(DamageSource.MAGIC, 2);
+		}
+		
 	}
 
 	private static class Masochism extends Spell {

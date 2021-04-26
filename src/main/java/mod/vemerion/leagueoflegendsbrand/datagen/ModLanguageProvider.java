@@ -32,6 +32,7 @@ public class ModLanguageProvider extends LanguageProvider {
 		add(ModEntities.PILLAR_OF_FLAME, "Pillar of Flame");
 		add(ModEntities.PYROCLASM, "Pyroclasm");
 		add(ModEntities.SEAR, "Sear");
+		add(ModEntities.INFECTED_CLEAVER, "Infected Cleaver");
 		
 		add(ModEffects.MASOCHISM, "Masochism");
 		add(ModEffects.SADISM, "Sadism");

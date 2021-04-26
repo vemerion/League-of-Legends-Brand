@@ -6,6 +6,7 @@ import mod.vemerion.leagueoflegendsbrand.init.ModParticles;
 import mod.vemerion.leagueoflegendsbrand.particle.BleedParticle;
 import mod.vemerion.leagueoflegendsbrand.renderer.AblazedRenderer;
 import mod.vemerion.leagueoflegendsbrand.renderer.BrandBallRenderer;
+import mod.vemerion.leagueoflegendsbrand.renderer.InfectedCleaverRenderer;
 import mod.vemerion.leagueoflegendsbrand.renderer.PillarOfFlameRenderer;
 import mod.vemerion.leagueoflegendsbrand.renderer.champion.ChampionRenderers;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,8 @@ public class ClientModEventSubscriber {
 				(renderManager) -> new BrandBallRenderer(renderManager));
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.ABLAZED,
 				(renderManager) -> new AblazedRenderer(renderManager));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.INFECTED_CLEAVER,
+				(renderManager) -> new InfectedCleaverRenderer(renderManager));
 	}
 	
 	@SubscribeEvent

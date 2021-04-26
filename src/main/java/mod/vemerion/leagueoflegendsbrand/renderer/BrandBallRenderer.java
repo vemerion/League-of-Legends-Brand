@@ -2,20 +2,20 @@ package mod.vemerion.leagueoflegendsbrand.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import mod.vemerion.leagueoflegendsbrand.entity.BrandBallEntity;
+import mod.vemerion.leagueoflegendsbrand.entity.SkillshotEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Pose;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class BrandBallRenderer extends CubeEntityRenderer<BrandBallEntity> {
+public class BrandBallRenderer extends CubeEntityRenderer<SkillshotEntity> {
 
 	public BrandBallRenderer(EntityRendererManager renderManager) {
 		super(renderManager);
 	}
 
 	@Override
-	public void render(BrandBallEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn,
+	public void render(SkillshotEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn,
 			IRenderTypeBuffer bufferIn, int packedLightIn) {
 		float ageInTicks = entityIn.ticksExisted + partialTicks;
 		Vector3d direction = entityIn.getMotion().normalize().inverse().scale(2);

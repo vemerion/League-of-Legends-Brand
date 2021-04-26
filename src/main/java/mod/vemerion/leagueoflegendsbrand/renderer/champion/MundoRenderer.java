@@ -8,6 +8,7 @@ import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import mod.vemerion.leagueoflegendsbrand.helper.Helper;
 import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
+import mod.vemerion.leagueoflegendsbrand.init.ModItems;
 import mod.vemerion.leagueoflegendsbrand.model.CubeModel;
 import mod.vemerion.leagueoflegendsbrand.model.MundoModel;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -119,9 +120,13 @@ public class MundoRenderer extends ChampionRenderer {
 	public void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress) {
 	}
+	
+	public static boolean shouldRenderCleaver(AbstractClientPlayerEntity player, Champions c) {
+		ItemStack left = player.getHeldItem(ClientHelper.leftHand(player));
+		return (left.isEmpty() || c.isSpell(left.getItem())) && !player.getCooldownTracker().hasCooldown(ModItems.INFECTED_CLEAVER);
+	}
 
 	public static class Renderer extends PlayerRenderer implements CustomRenderer {
-		public static final ResourceLocation TEXTURES = new ResourceLocation(Main.MODID, "textures/entity/mundo.png");
 
 		MundoModel model;
 
@@ -133,19 +138,18 @@ public class MundoRenderer extends ChampionRenderer {
 
 		@Override
 		public ResourceLocation getEntityTexture(AbstractClientPlayerEntity entity) {
-			return TEXTURES;
+			return MundoModel.TEXTURES;
 		}
 
 		@Override
 		public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks,
 				MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 			Champions.get(entityIn).ifPresent(c -> {
-				ItemStack left = entityIn.getHeldItem(ClientHelper.leftHand(entityIn));
-				model.cleaverHandle.showModel = left.isEmpty() || c.isSpell(left.getItem());
+				model.cleaver.setVisible(shouldRenderCleaver(entityIn, c));
 			});
-			
+
 			model.needle1.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.CHEST.getIndex()).isEmpty();
-			
+
 			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 		}
 

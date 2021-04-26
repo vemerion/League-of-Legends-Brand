@@ -16,7 +16,7 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-public class PyroclasmEntity extends BrandBallEntity {
+public class PyroclasmEntity extends SkillshotEntity {
 	
 	private static final int MAX_BOUNCES = 4;
 
@@ -25,13 +25,13 @@ public class PyroclasmEntity extends BrandBallEntity {
 	public Entity bouncer;
 
 	public PyroclasmEntity(EntityType<? extends PyroclasmEntity> type, World world) {
-		super(type, world);
+		super(type, world, 100);
 		this.bounces = MAX_BOUNCES;
 	}
 
 	public PyroclasmEntity(EntityType<? extends PyroclasmEntity> type, double x, double y, double z, World worldIn,
 			Entity target, int bounces) {
-		super(type, x, y, z, worldIn);
+		super(type, x, y, z, worldIn, 100);
 		this.target = target;
 		this.bounces = bounces;
 	}
@@ -41,8 +41,6 @@ public class PyroclasmEntity extends BrandBallEntity {
 		super.tick();
 
 		if (!world.isRemote) {
-			if (ticksExisted > 100)
-				remove();
 			if (target != null && target.isAlive()) {
 				shoot(target.getPosX() - getPosX(), target.getEyePosition(0).getY() - getPosY(),
 						target.getPosZ() - getPosZ(), 0.3f, 0);

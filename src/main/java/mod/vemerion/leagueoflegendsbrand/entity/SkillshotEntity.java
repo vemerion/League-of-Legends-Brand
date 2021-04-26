@@ -6,27 +6,53 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BrandBallEntity extends AbstractArrowEntity {
+public class SkillshotEntity extends AbstractArrowEntity {
+	
+	private int duration;
 
-	public BrandBallEntity(EntityType<? extends BrandBallEntity> type, World world) {
+	public SkillshotEntity(EntityType<? extends SkillshotEntity> type, World world, int duration) {
 		super(type, world);
 		this.setNoGravity(true);
+		this.duration = duration;
 	}
 
-	public BrandBallEntity(EntityType<? extends BrandBallEntity> type, double x, double y, double z, World worldIn) {
+	public SkillshotEntity(EntityType<? extends SkillshotEntity> type, double x, double y, double z, World worldIn, int duration) {
 		super(type, x, y, z, worldIn);
 		this.setNoGravity(true);
+		this.duration = duration;
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (!world.isRemote && duration-- < 0)
+			remove();
+	}
+	
+	@Override
+	public void readAdditional(CompoundNBT compound) {
+		super.readAdditional(compound);
+		if (compound.contains("duration"))
+			duration = compound.getInt("duration");
+	}
+	
+	@Override
+	public void writeAdditional(CompoundNBT compound) {
+		super.writeAdditional(compound);
+		
+		compound.putInt("duration", duration);
 	}
 
 	@Override
 	protected ItemStack getArrowStack() {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
