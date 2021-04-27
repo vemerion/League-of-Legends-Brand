@@ -15,7 +15,6 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -119,14 +118,17 @@ public class MundoRenderer extends ChampionRenderer {
 	@Override
 	public void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress) {
-	}
-	
-	public static boolean shouldRenderCleaver(AbstractClientPlayerEntity player, Champions c) {
-		ItemStack left = player.getHeldItem(ClientHelper.leftHand(player));
-		return (left.isEmpty() || c.isSpell(left.getItem())) && !player.getCooldownTracker().hasCooldown(ModItems.INFECTED_CLEAVER);
+		RENDERER.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress, equipProgress);
+
 	}
 
-	public static class Renderer extends PlayerRenderer implements CustomRenderer {
+	public static boolean shouldRenderCleaver(AbstractClientPlayerEntity player, Champions c) {
+		ItemStack left = player.getHeldItem(ClientHelper.leftHand(player));
+		return (left.isEmpty() || c.isSpell(left.getItem()))
+				&& !player.getCooldownTracker().hasCooldown(ModItems.INFECTED_CLEAVER);
+	}
+
+	public static class Renderer extends HumanRenderer {
 
 		MundoModel model;
 
@@ -151,6 +153,30 @@ public class MundoRenderer extends ChampionRenderer {
 			model.needle1.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.CHEST.getIndex()).isEmpty();
 
 			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+		}
+
+		@Override
+		protected void preRenderArm(HandSide side, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
+				int combinedLightIn, AbstractClientPlayerEntity playerIn, float partialTicks) {
+			super.preRenderArm(side, matrixStackIn, bufferIn, combinedLightIn, playerIn, partialTicks);
+			Champions.get(playerIn).ifPresent(c -> {
+				model.cleaver.setVisible(shouldRenderCleaver(playerIn, c));
+			});
+		}
+
+		@Override
+		public void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
+				AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress) {
+			matrix.push();
+			Champions.get(player).ifPresent(c -> {
+				if (side == HandSide.LEFT && shouldRenderCleaver(player, c) && swingProgress < 0.01
+						&& equipProgress < 0.01 && player.isSprinting()) {
+					matrix.rotate(new Quaternion(20, 0, 0, true));
+					matrix.translate(0, 0.03, 0);
+				}
+			});
+			super.renderHand(side, matrix, buffer, light, player, partialTicks, swingProgress, equipProgress);
+			matrix.pop();
 		}
 
 	}
