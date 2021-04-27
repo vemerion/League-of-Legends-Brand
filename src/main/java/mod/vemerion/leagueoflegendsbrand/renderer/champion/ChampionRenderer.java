@@ -37,15 +37,14 @@ public abstract class ChampionRenderer {
 	protected abstract boolean renderQ(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer,
 			int light, AbstractClientPlayerEntity player, float partialTicks);
 
-	public abstract void renderThirdPerson(AbstractClientPlayerEntity player, float yaw, float partialTicks, MatrixStack matrix,
-			IRenderTypeBuffer buffer, int light);
+	public abstract void renderThirdPerson(AbstractClientPlayerEntity player, float yaw, float partialTicks,
+			MatrixStack matrix, IRenderTypeBuffer buffer, int light);
 
-	public abstract void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer,
-			int light, AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress);
+	public abstract void renderHand(HandSide side, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
+			AbstractClientPlayerEntity player, float partialTicks, float swingProgress, float equipProgress);
 
 	protected void renderFirstPerson(AbstractClientPlayerEntity player, float partialTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light) {
-		
-	}
 
+	}
 }
