@@ -22,6 +22,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -94,24 +95,27 @@ public class MundoRenderer extends ChampionRenderer {
 	@Override
 	protected boolean renderR(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks) {
-		return true;
+		return false;
 	}
 
 	@Override
 	protected boolean renderE(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks) {
-		return true;
+		return false;
 	}
 
 	@Override
 	protected boolean renderW(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks) {
-		return true;
+		return false;
 	}
 
 	@Override
 	protected boolean renderQ(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
 			AbstractClientPlayerEntity player, float partialTicks) {
+		if (side == HandSide.RIGHT)
+			return false;
+		RENDERER.renderInfectedCleaver(side, progress, matrix, buffer, light, player, partialTicks);
 		return true;
 	}
 
@@ -153,6 +157,15 @@ public class MundoRenderer extends ChampionRenderer {
 			model.needle1.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.CHEST.getIndex()).isEmpty();
 
 			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+		}
+		
+		private void renderInfectedCleaver(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
+				AbstractClientPlayerEntity player, float partialTicks) {
+			matrix.push();
+			matrix.rotate(new Quaternion(-70 + MathHelper.sin(progress * ClientHelper.toRad(120)) * 40, 0, 0, true));
+			matrix.translate(-1, -progress * 0.1, -0.7);
+			renderArm(side, matrix, buffer, light, player, partialTicks);
+			matrix.pop();
 		}
 
 		@Override
