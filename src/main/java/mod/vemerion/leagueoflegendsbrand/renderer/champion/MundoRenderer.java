@@ -155,6 +155,9 @@ public class MundoRenderer extends ChampionRenderer {
 			});
 
 			model.needle1.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.CHEST.getIndex()).isEmpty();
+			model.hair1.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.HEAD.getIndex()).isEmpty();
+			model.hair2.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.HEAD.getIndex()).isEmpty();
+			model.hair3.showModel = entityIn.inventory.armorItemInSlot(EquipmentSlotType.HEAD.getIndex()).isEmpty();
 
 			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 		}
