@@ -1,7 +1,8 @@
 package mod.vemerion.leagueoflegendsbrand.init;
 
 import mod.vemerion.leagueoflegendsbrand.Main;
-import mod.vemerion.leagueoflegendsbrand.lootmodifier.SummonersRiftBrandLootModifier;
+import mod.vemerion.leagueoflegendsbrand.lootmodifier.SummonersRiftLootModifier;
+import mod.vemerion.leagueoflegendsbrand.lootmodifier.lootcondition.LootConditions;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,11 +14,13 @@ import net.minecraftforge.registries.ObjectHolder;
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModLootModifiers {
 
-	public static final GlobalLootModifierSerializer<SummonersRiftBrandLootModifier> SUMMONERS_RIFT_BRAND = null;
+	public static final GlobalLootModifierSerializer<SummonersRiftLootModifier> SUMMONERS_RIFT = null;
 
 	@SubscribeEvent
 	public static void onRegisterModifiers(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
+		LootConditions.register();
 		IForgeRegistry<GlobalLootModifierSerializer<?>> reg = event.getRegistry();
-		reg.register(Init.setup(new SummonersRiftBrandLootModifier.Serializer(), "summoners_rift_brand"));
+
+		reg.register(Init.setup(new SummonersRiftLootModifier.Serializer(), "summoners_rift"));
 	}
 }

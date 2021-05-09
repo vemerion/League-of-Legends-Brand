@@ -6,9 +6,9 @@
     },
     {
       "condition": "league-of-legends-brand:from_loot_table",
-      "loot_table": "minecraft:chests/nether_bridge"
+      "loot_table": "minecraft:chests/woodland_mansion"
     }
   ],
-  "item": "league-of-legends-brand:summoners_rift_brand",
+  "item": "league-of-legends-brand:summoners_rift_mundo",
   "type": "league-of-legends-brand:summoners_rift"
 }
