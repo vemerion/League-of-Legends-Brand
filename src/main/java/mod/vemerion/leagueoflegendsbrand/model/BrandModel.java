@@ -3,14 +3,13 @@ package mod.vemerion.leagueoflegendsbrand.model;
 import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.HandSide;
 
-public class BrandModel extends PlayerModel<AbstractClientPlayerEntity> {
+public class BrandModel extends HumanModel {
 
 	public BrandModel(float modelSize) {
-		super(modelSize, false);
+		super(modelSize, 64, 64);
 	}
 
 	@Override

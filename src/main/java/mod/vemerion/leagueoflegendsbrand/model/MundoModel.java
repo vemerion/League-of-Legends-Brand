@@ -5,14 +5,13 @@ import mod.vemerion.leagueoflegendsbrand.champion.Champions;
 import mod.vemerion.leagueoflegendsbrand.helper.ClientHelper;
 import mod.vemerion.leagueoflegendsbrand.renderer.champion.MundoRenderer;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Created using Tabula 8.0.0
  */
-public class MundoModel extends PlayerModel<AbstractClientPlayerEntity> {
+public class MundoModel extends HumanModel {
 	
 	public static final ResourceLocation TEXTURES = new ResourceLocation(Main.MODID, "textures/entity/mundo.png");
 	
@@ -26,11 +25,7 @@ public class MundoModel extends PlayerModel<AbstractClientPlayerEntity> {
 	public InfectedCleaverModel<?> cleaver;
 
 	public MundoModel(float modelSize) {
-		super(modelSize, false);
-		this.textureWidth = 64;
-		this.textureHeight = 128;
-		this.textureWidth = 64;
-		this.textureHeight = 128;
+		super(modelSize, 64, 128);
 		this.bipedHead = new ModelRenderer(this, 0, 0);
 		this.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.bipedHead.addBox(-4.0F, -8.0F, -4.0F, 8.0F, 6.0F, 8.0F, 0.0F, 0.0F, 0.0F);
