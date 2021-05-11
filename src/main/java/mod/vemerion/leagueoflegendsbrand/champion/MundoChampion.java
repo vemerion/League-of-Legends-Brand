@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import mod.vemerion.leagueoflegendsbrand.helper.Helper;
 import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
 import mod.vemerion.leagueoflegendsbrand.init.ModEntities;
 import mod.vemerion.leagueoflegendsbrand.init.ModItems;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
@@ -56,7 +58,7 @@ public class MundoChampion extends ChampionImplementation {
 		World world = player.world;
 
 		if (!world.isRemote) {
-			if (burningAgonyActivated)
+			if (burningAgonyActivated) {
 				if (agonyDamageTimer++ > AGONY_DAMAGE_INTERVAL) {
 					agonyDamageTimer = 0;
 					for (LivingEntity e : world.getEntitiesWithinAABB(LivingEntity.class,
@@ -65,6 +67,11 @@ public class MundoChampion extends ChampionImplementation {
 					}
 					player.attackEntityFrom(DamageSource.MAGIC, 1);
 				}
+				
+				if (player.ticksExisted % 5 == 0)
+					player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.BURNING, SoundCategory.PLAYERS,
+							1, Helper.soundPitch(player));
+			}
 
 			if (adrenalineTimer++ > ADRENALINE_INTERVAL) {
 				adrenalineTimer = 0;
@@ -138,7 +145,7 @@ public class MundoChampion extends ChampionImplementation {
 		private static final int COOLDOWN = 20 * 4;
 
 		public InfectedCleaver() {
-			super(() -> ModEntities.INFECTED_CLEAVER, 1f, COOLDOWN, () -> ModSounds.BURNING); // TODO: Change sound
+			super(() -> ModEntities.INFECTED_CLEAVER, 1f, COOLDOWN, () -> ModSounds.INFECTED_CLEAVER_THROW);
 		}
 		
 		@Override
@@ -160,6 +167,7 @@ public class MundoChampion extends ChampionImplementation {
 				player.attackEntityFrom(DamageSource.MAGIC, 2);
 				player.addPotionEffect(new EffectInstance(ModEffects.MASOCHISM, COOLDOWN, getAmplifier(player)));
 			}
+			player.playSound(ModSounds.MASOCHISM, 1, Helper.soundPitch(player));
 		}
 
 		private int getAmplifier(PlayerEntity player) {
@@ -179,6 +187,7 @@ public class MundoChampion extends ChampionImplementation {
 				player.attackEntityFrom(DamageSource.MAGIC, player.getHealth() / 4);
 				player.addPotionEffect(new EffectInstance(ModEffects.SADISM, DURATION, 0));
 			}
+			player.playSound(ModSounds.SADISM, 0.8f, Helper.soundPitch(player));
 		}
 	}
 }

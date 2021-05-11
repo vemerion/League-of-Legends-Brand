@@ -18,6 +18,10 @@ public class ModSounds {
 	public static final SoundEvent FIREBALL_SPELL = null;
 	public static final SoundEvent FIREBALL_WOOSH = null;
 	public static final SoundEvent SPRAY = null;
+	public static final SoundEvent INFECTED_CLEAVER_IMPACT = null;
+	public static final SoundEvent INFECTED_CLEAVER_THROW = null;
+	public static final SoundEvent MASOCHISM = null;
+	public static final SoundEvent SADISM = null;    
 
 	@SubscribeEvent
 	public static void onRegisterSound(RegistryEvent.Register<SoundEvent> event) {
@@ -34,5 +38,13 @@ public class ModSounds {
 		event.getRegistry().register(Init.setup(fireball_woosh_sound, "fireball_woosh"));
 		SoundEvent spray = new SoundEvent(new ResourceLocation(Main.MODID, "spray"));
 		event.getRegistry().register(Init.setup(spray, "spray"));  
+		SoundEvent infected_cleaver_impact = new SoundEvent(new ResourceLocation(Main.MODID, "infected_cleaver_impact"));
+		event.getRegistry().register(Init.setup(infected_cleaver_impact, "infected_cleaver_impact"));
+		SoundEvent infected_cleaver_throw = new SoundEvent(new ResourceLocation(Main.MODID, "infected_cleaver_throw"));
+		event.getRegistry().register(Init.setup(infected_cleaver_throw, "infected_cleaver_throw"));
+		SoundEvent masochism = new SoundEvent(new ResourceLocation(Main.MODID, "masochism"));
+		event.getRegistry().register(Init.setup(masochism, "masochism"));
+		SoundEvent sadism = new SoundEvent(new ResourceLocation(Main.MODID, "sadism"));
+		event.getRegistry().register(Init.setup(sadism, "sadism"));   
 	}
 }

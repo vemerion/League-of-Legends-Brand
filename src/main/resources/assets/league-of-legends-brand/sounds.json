@@ -46,5 +46,37 @@
         "stream": false
       }
     ]
+  },
+  "infected_cleaver_impact": {
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:infected_cleaver_impact",
+        "stream": false
+      }
+    ]
+  },
+  "infected_cleaver_throw": {
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:infected_cleaver_throw",
+        "stream": false
+      }
+    ]
+  },
+  "masochism": {
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:masochism",
+        "stream": false
+      }
+    ]
+  },
+  "sadism": {
+    "sounds": [
+      {
+        "name": "league-of-legends-brand:sadism",
+        "stream": false
+      }
+    ]
   }
 }

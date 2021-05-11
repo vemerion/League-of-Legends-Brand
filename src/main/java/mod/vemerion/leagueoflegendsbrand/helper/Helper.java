@@ -1,10 +1,21 @@
 package mod.vemerion.leagueoflegendsbrand.helper;
 
+import java.util.Random;
+
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class Helper {
 	public static float lerpRepeat(float value, float start, float stop) {
 		return MathHelper.lerp(value % 1, start, stop);
+	}
+
+	public static float soundPitch(Random rand) {
+		return 0.8f + rand.nextFloat() * 0.4f;
+	}
+	
+	public static float soundPitch(PlayerEntity player) {
+		return soundPitch(player.getRNG());
 	}
 
 	public static int color(int r, int g, int b, int a) {

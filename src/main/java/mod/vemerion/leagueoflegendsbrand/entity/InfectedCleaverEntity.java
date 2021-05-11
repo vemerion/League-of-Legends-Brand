@@ -1,5 +1,7 @@
 package mod.vemerion.leagueoflegendsbrand.entity;
 
+import mod.vemerion.leagueoflegendsbrand.helper.Helper;
+import mod.vemerion.leagueoflegendsbrand.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -34,6 +36,7 @@ public class InfectedCleaverEntity extends SkillshotEntity {
 			}
 
 		}
+		playSound(ModSounds.INFECTED_CLEAVER_IMPACT, 0.8f, Helper.soundPitch(rand));
 		remove();
 	}
 
