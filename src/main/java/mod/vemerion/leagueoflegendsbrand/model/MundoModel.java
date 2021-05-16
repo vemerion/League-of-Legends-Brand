@@ -41,7 +41,7 @@ public class MundoModel extends HumanModel {
 		this.lowerTeeth.setRotationPoint(0.0F, -1.0F, 0.0F);
 		this.lowerTeeth.addBox(-4.0F, -1.0F, -5.0F, 8.0F, 1.0F, 5.0F, 0.0F, 0.0F, 0.0F);
 		this.bipedLeftLeg = new ModelRenderer(this, 16, 48);
-		this.bipedLeftLeg.setRotationPoint(1.9F, 12.0F, 0.0F);
+		this.bipedLeftLeg.setRotationPoint(2F, 12.0F, 0.0F);
 		this.bipedLeftLeg.addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, 0.0F, 0.0F);
 		this.bipedRightArm = new ModelRenderer(this, 40, 16);
 		this.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
@@ -68,7 +68,7 @@ public class MundoModel extends HumanModel {
 		this.needle1.addBox(-0.5F, -1.0F, -0.5F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F);
 		this.setRotateAngle(needle1, 0.0F, 0.0F, -0.3127630032889644F);
 		this.bipedRightLeg = new ModelRenderer(this, 0, 16);
-		this.bipedRightLeg.setRotationPoint(-1.9F, 12.0F, 0.0F);
+		this.bipedRightLeg.setRotationPoint(-2F, 12.0F, 0.0F);
 		this.bipedRightLeg.addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, 0.0F, 0.0F);
 		this.needle2 = new ModelRenderer(this, 0, 64);
 		this.needle2.setRotationPoint(0.0F, -1.0F, 0.0F);
