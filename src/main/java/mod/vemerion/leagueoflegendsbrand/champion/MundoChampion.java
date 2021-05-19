@@ -25,6 +25,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
 
 public class MundoChampion extends ChampionImplementation {
@@ -67,10 +68,10 @@ public class MundoChampion extends ChampionImplementation {
 					}
 					player.attackEntityFrom(DamageSource.MAGIC, 1);
 				}
-				
+
 				if (player.ticksExisted % 5 == 0)
-					player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.BURNING, SoundCategory.PLAYERS,
-							1, Helper.soundPitch(player));
+					player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
+							ModSounds.BURNING, SoundCategory.PLAYERS, 1, Helper.soundPitch(player));
 			}
 
 			if (adrenalineTimer++ > ADRENALINE_INTERVAL) {
@@ -134,9 +135,10 @@ public class MundoChampion extends ChampionImplementation {
 			if (!world.isRemote) {
 				setCooldown(player, stack, mundo.burningAgonyActivated ? COOLDOWN : TOGGLE_COOLDOWN);
 				mundo.agonyDamageTimer = 0;
+				mundo.burningAgonyActivated = !mundo.burningAgonyActivated;
+				Network.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
+						new BurningAgonyMessage(mundo.burningAgonyActivated, player.getUniqueID()));
 			}
-			mundo.burningAgonyActivated = !mundo.burningAgonyActivated;
-
 		}
 	}
 
@@ -147,13 +149,13 @@ public class MundoChampion extends ChampionImplementation {
 		public InfectedCleaver() {
 			super(() -> ModEntities.INFECTED_CLEAVER, 1f, COOLDOWN, () -> ModSounds.INFECTED_CLEAVER_THROW);
 		}
-		
+
 		@Override
 		public void finish(ItemStack stack, World world, PlayerEntity player) {
 			super.finish(stack, world, player);
 			player.attackEntityFrom(DamageSource.MAGIC, 2);
 		}
-		
+
 	}
 
 	private static class Masochism extends Spell {
