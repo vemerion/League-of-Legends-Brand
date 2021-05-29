@@ -42,13 +42,13 @@ public class MundoRenderer extends ChampionRenderer {
 		float ageInTicks = player.ticksExisted + partialTicks;
 		RENDERER.render(player, yaw, partialTicks, matrix, buffer, light);
 		Champions.get(player).ifPresent(c -> {
-			if (c.getMundo().isBurningAgonyActivated()) {
+			if (c.getMundo().isBurningAgonyActivated())
 				renderBurningAgony(0.2, 0, ageInTicks, matrix, buffer, light);
+			if (c.hasEffect(ModEffects.SADISM)) {
+				renderSadismReg(player, ageInTicks, matrix, buffer, light);
+				renderSadismRing(player, ageInTicks, matrix, buffer, light);
 			}
 		});
-
-		renderSadismReg(player, ageInTicks, matrix, buffer, light);
-		renderSadismRing(player, ageInTicks, matrix, buffer, light);
 	}
 
 	@Override
@@ -59,24 +59,26 @@ public class MundoRenderer extends ChampionRenderer {
 			if (c.getMundo().isBurningAgonyActivated()) {
 				renderBurningAgony(-1.5, 0, ageInTicks, matrix, buffer, light);
 			}
+			if (c.hasEffect(ModEffects.SADISM)) {
+				matrix.push();
+				matrix.rotate(new Quaternion(player.getPitch(partialTicks), 0, 0, true));
+				matrix.translate(0, -2, 0);
+				renderSadismRing(player, ageInTicks, matrix, buffer, light);
+				matrix.pop();
+			}
+
 		});
-		matrix.push();
-		matrix.rotate(new Quaternion(player.getPitch(partialTicks), 0, 0, true));
-		matrix.translate(0, -2, 0);
-		renderSadismRing(player, ageInTicks, matrix, buffer, light);
-		matrix.pop();
+
 	}
 
 	private void renderSadismRing(AbstractClientPlayerEntity player, float ageInTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light) {
-		if (player.isPotionActive(ModEffects.SADISM))
-			SADISM_RING.render(ageInTicks, matrix, buffer, light);
+		SADISM_RING.render(ageInTicks, matrix, buffer, light);
 	}
 
 	private void renderSadismReg(AbstractClientPlayerEntity player, float ageInTicks, MatrixStack matrix,
 			IRenderTypeBuffer buffer, int light) {
-		if (player.isPotionActive(ModEffects.SADISM))
-			CubeModel.getCube().renderBurning(25, 0.5f, ageInTicks, matrix, buffer, light, CubeModel::green);
+		CubeModel.getCube().renderBurning(25, 0.5f, ageInTicks, matrix, buffer, light, CubeModel::green);
 	}
 
 	private void renderBurningAgony(double height, float yaw, float ageInTicks, MatrixStack matrix,
@@ -161,9 +163,9 @@ public class MundoRenderer extends ChampionRenderer {
 
 			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 		}
-		
-		private void renderInfectedCleaver(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer, int light,
-				AbstractClientPlayerEntity player, float partialTicks) {
+
+		private void renderInfectedCleaver(HandSide side, float progress, MatrixStack matrix, IRenderTypeBuffer buffer,
+				int light, AbstractClientPlayerEntity player, float partialTicks) {
 			matrix.push();
 			matrix.rotate(new Quaternion(-70 + MathHelper.sin(progress * ClientHelper.toRad(120)) * 40, 0, 0, true));
 			matrix.translate(-1, -progress * 0.1, -0.7);
@@ -220,7 +222,8 @@ public class MundoRenderer extends ChampionRenderer {
 				float scale = Helper.lerpRepeat(progress, 0, 4);
 				matrix.push();
 				matrix.scale(scale, 1, scale);
-				render(matrix, builder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1 - progress);
+				render(matrix, builder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1,
+						Helper.lerpRepeat(1 - progress, 0, 1));
 				matrix.pop();
 			}
 		}

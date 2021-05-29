@@ -80,8 +80,11 @@ public class MundoChampion extends ChampionImplementation {
 			}
 		}
 
-		if (world.isRemote && player.isPotionActive(ModEffects.MASOCHISM) && player.ticksExisted % 3 == 0) {
-			addMasochismParticles();
+		if (world.isRemote && player.ticksExisted % 3 == 0) {
+			Champions.get(player).ifPresent(c -> {
+				if (c.hasEffect(ModEffects.MASOCHISM))
+					addMasochismParticles();
+			});
 		}
 	}
 

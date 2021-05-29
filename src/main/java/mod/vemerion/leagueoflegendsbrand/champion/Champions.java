@@ -1,11 +1,15 @@
 package mod.vemerion.leagueoflegendsbrand.champion;
 
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import mod.vemerion.leagueoflegendsbrand.init.ModEffects;
 import mod.vemerion.leagueoflegendsbrand.item.SpellItem;
 import mod.vemerion.leagueoflegendsbrand.network.ChampionMessage;
+import mod.vemerion.leagueoflegendsbrand.network.EffectMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.Effect;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -35,12 +40,20 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 	private Champion champion;
 	private PlayerEntity player;
 	private EnumMap<Champion, ChampionImplementation> champImpls;
+	private Map<Effect, Boolean> effects;
 
 	public Champions(PlayerEntity player) {
 		this.player = player;
 		this.setChampion(Champion.STEVE);
 
 		this.initChamps();
+		this.initEffects();
+	}
+
+	private void initEffects() {
+		effects = new HashMap<>();
+		effects.put(ModEffects.MASOCHISM, false);
+		effects.put(ModEffects.SADISM, false);
 	}
 
 	private void initChamps() {
@@ -49,7 +62,6 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 		champImpls.put(Champion.BRAND, new BrandChampion(player));
 		champImpls.put(Champion.MUNDO, new MundoChampion(player));
 	}
-
 
 	public boolean isSteve() {
 		return isChampion(Champion.STEVE);
@@ -84,14 +96,25 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 	}
 
 	public void tick() {
-		if (!player.world.isRemote)
+		if (!player.world.isRemote) {
 			ItemStackHelper.func_233534_a_(player.inventory,
 					s -> !isSpell(s.getItem()) && s.getItem() instanceof SpellItem, -1, false);
+
+			syncEffects(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), false);
+		}
 		if (isChampion())
 			addSpellsToInv();
 		destroyMap();
 
 		getChampImpl().tick();
+	}
+
+	public void setEffect(Effect effect, boolean active) {
+		effects.put(effect, active);
+	}
+
+	public boolean hasEffect(Effect effect) {
+		return effects.getOrDefault(effect, false);
 	}
 
 	private void destroyMap() {
@@ -147,7 +170,19 @@ public class Champions implements INBTSerializable<CompoundNBT> {
 
 	private void sync(PacketTarget target) {
 		Network.INSTANCE.send(target, new ChampionMessage(getChampion().getId(), player.getUniqueID()));
+		syncEffects(target, true);
 		getChampImpl().sync(target);
+	}
+
+	private void syncEffects(PacketTarget target, boolean all) {
+		for (Effect e : effects.keySet()) {
+			boolean isActive = player.isPotionActive(e);
+			if (all || isActive != effects.get(e)) {
+				if (!all)
+					effects.put(e, isActive);
+				Network.INSTANCE.send(target, new EffectMessage(e, isActive, player.getUniqueID()));
+			}
+		}
 	}
 
 	public static LazyOptional<Champions> get(Entity player) {

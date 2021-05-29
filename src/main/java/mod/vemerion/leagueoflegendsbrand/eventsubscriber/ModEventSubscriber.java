@@ -4,9 +4,10 @@ import mod.vemerion.leagueoflegendsbrand.Main;
 import mod.vemerion.leagueoflegendsbrand.capability.Ablazed;
 import mod.vemerion.leagueoflegendsbrand.capability.CompoundStorage;
 import mod.vemerion.leagueoflegendsbrand.champion.Champions;
-import mod.vemerion.leagueoflegendsbrand.network.ChampionMessage;
 import mod.vemerion.leagueoflegendsbrand.network.BurningAgonyMessage;
 import mod.vemerion.leagueoflegendsbrand.network.BurningMessage;
+import mod.vemerion.leagueoflegendsbrand.network.ChampionMessage;
+import mod.vemerion.leagueoflegendsbrand.network.EffectMessage;
 import mod.vemerion.leagueoflegendsbrand.network.Network;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,7 +31,8 @@ public class ModEventSubscriber {
 				BurningMessage::decode, BurningMessage::handle);
 		Network.INSTANCE.registerMessage(Network.index(), BurningAgonyMessage.class, BurningAgonyMessage::encode,
 				BurningAgonyMessage::decode, BurningAgonyMessage::handle);
-
+		Network.INSTANCE.registerMessage(Network.index(), EffectMessage.class, EffectMessage::encode,
+				EffectMessage::decode, EffectMessage::handle);
 	}
 
 }
