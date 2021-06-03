@@ -28,7 +28,7 @@ credits="A big thanks to Rito Games for making their amazing game" #optional
 authors="Vemerion" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-This mod adds the champion Brand from the game League of Legends as a playable character.
+This mod adds champions from the game League of Legends as playable characters.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.league-of-legends-brand]] #optional

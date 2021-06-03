@@ -188,7 +188,7 @@ public class MundoChampion extends ChampionImplementation {
 		@Override
 		public void start(ItemStack stack, World world, PlayerEntity player, Hand hand) {
 			if (!world.isRemote) {
-				setCooldown(player, stack, 40); // TODO: Change to proper cooldown
+				setCooldown(player, stack, COOLDOWN);
 				player.attackEntityFrom(DamageSource.MAGIC, player.getHealth() / 4);
 				player.addPotionEffect(new EffectInstance(ModEffects.SADISM, DURATION, 0));
 			}
